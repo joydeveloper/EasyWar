@@ -1,48 +1,71 @@
-﻿let app = new PIXI.Application({ resizeTo: window , background: "red" });
-let sprite = PIXI.Sprite.from('Assets/test.png');
-let sprite2 = PIXI.Sprite.from('Assets/test.png');
-let elapsed = 0.0;
-class GameManager {
-    constructor(pixiapp) {
-        this.pixiapp = pixiapp;
+﻿const gamestatus = ["Easy war", "В процессе", "Игра завершена"];
+
+class World {
+    constructor(width, height, map) {
+        this.width = width;
+        this.height = height;
+        this.map = map;
     }
-    Start() {
-        this.pixiapp.stage.addChild(sprite);
-  
-   
+    Draw() {
+        const graphics = new PIXI.Graphics();
+        graphics.lineStyle(10, 0xFFBD01, 1);
+        graphics.beginFill(0x00FFBA);
+        graphics.drawRect(window.screen.width *0.05, window.screen.height *0.05, this.width, this.height);
+        graphics.endFill();
+        app.stage.addChild(graphics);
+    }
+ 
+};
+class GameManager {
+
+    constructor() {
+        this.world = new World(window.screen.width * 0.9, window.screen.height * 0.7, null);
     }
     Setup() {
-       
-        ParentSet(document.createElement("div"), "mainscene");
+        statusChange(gamestatus[1]);
+        this.world.Draw();
+        restartProc(this.Restart);
     }
-    Update() {
-        app.ticker.add((delta) => {
-            elapsed += delta;
-            sprite.x = 100.0 + Math.cos(elapsed / 50.0) * 100.0;
-            let spritex = PIXI.Sprite.from('Assets/test.png');
-            spritex.interactive = true;
-            spritex.cursor = 'pointer';
-            spritex.on('pointerdown', onClick);
-            this.pixiapp.stage.addChild(spritex);
-           
-        }); 
+    Start() {
+        //this.world.Draw();
+    }
+    Restart() {
+        statusChange(gamestatus[0]);
+        document.getElementById('restartbut').remove();
+        app.stage.removeChildAt(0);
+    }
+    GameOver() {
+        statusChange(gamestatus[2]);
+    }
+    OnGameprocess = new Event('gameevent');
+  
+};
+class WorldMap {
+   
+};
+class GameObject {
+
+
+};
+class StaticObject extends GameObject {
+
+};
+function statusChange(text) {
+    document.getElementById('status').innerHTML = text;
+};
+function restartProc(func) {
+    if (!document.getElementById('restartbut')) {
+        let button = BuildElement('button', 'mainscene', 'restartbut', 'button');
+        button.innerHTML = "Еще раз";
+        AddClickFunction(button, func);
     }
 }
-const gameManager = new GameManager(app);
-window.gameManager = gameManager;
-function onStart() {
-    document.body.appendChild(app.view);
-    gameManager.Setup();
-    gameManager.Start();
-    gameManager.Update();
-}
-function onClick() {
-    spritex.scale.x *= 1.25;
-    spritex.scale.y *= 1.25;
-}
-function ParentSet(instance, eparent) {
-    if (eparent != null || eparent != undefined)
-        document.getElementById(eparent).appendChild(instance);
-}
+
+
+
+
+
+
+
 
 
