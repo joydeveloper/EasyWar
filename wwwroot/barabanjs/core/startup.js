@@ -11,5 +11,5 @@ appconfig = {
     ipad: 'css/devices/ipad.css',
     default: 'css/devices/default.css'
 };
-var app = new AppX(appconfig);
-app.Setup();
+var appx = new AppX(appconfig);
+appx.Setup();

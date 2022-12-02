@@ -1,38 +1,40 @@
 ﻿<!doctype html>
 <html>
 <head>
+    <meta content="KEYWORDS 3-7" name="keywords" />
+    <meta content="DESCRIPTION 5-20" name="description" />
+    <meta name="theme-color" content="#fff" />
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+    <script src="barabanjs/core/app.js"></script>
+    <script src="barabanjs/utils/readers.js"></script>
+    <script src="barabanjs/utils/debugutils.js"></script>
+    <script src="barabanjs/utils/utils.js"></script>
+    <script src="barabanjs/utils/cookie.js"></script>
+    <script src="barabanjs/core/startup.js"></script>
+    <script src="barabanjs/core/elementfactory.js"></script>
+    <script src="barabanjs/core/privatebuilder.js"></script>
+    <script src="barabanjs/core/htmlset.js"></script>
     <script src="https://pixijs.download/release/pixi.min.js"></script>
     <script src="gamejs/gamemanager.js"></script>
+    <script src="gamejs/gameobjects.js"></script>
     <script src="gamejs/playermanager.js"></script>
     <script src="gamejs/units.js"></script>
     <script src="gamejs/ui.js"></script>
-    <style>
-        .button {
-            background-color: #4CAF50; 
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-        }
-        body {
-            overflow: hidden; 
-            margin-top:1em;
-        }
-
-    </style>
+    <link href="css/site.css" rel="stylesheet" type="text/css">
+    <link href="css/adaptive.css" rel="stylesheet">
 </head>
-<body onload="onLoad()">
+<body onload="loadScript('barabanjs/core/startup.js', script => { appx.Start() });" >
+    <nav> <div align="center"><header><h1 id="status">EasyWar</h1></header></div></nav>
     <script src="gamejs/utils.js"></script>
-    <script src="gamejs/apphead.js"></script>
-    <div align="center"><header><h1 id="status">EasyWar</h1></header></div>
-    <div id='mainscene'></div>
+    <canvas id='mainscene'></canvas>
+    <script>
+        consolelog('width', window.screen.width);
+        consolelog('height', window.screen.height);
+        SceneManager.initialize(window.screen.width-19, window.screen.height-150, 'black');
+    </script>
     <article></article>
     <aside></aside>
-    <footer><p>Scyga inc 2022</p></footer>
+    <footer ><p>Scyga inc 2022 &nbsp &nbsp </p></footer>
 </body>
 </html>
 

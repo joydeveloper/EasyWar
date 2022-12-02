@@ -1,26 +1,58 @@
+body {
+    overflow: hidden;
+    height: 100%;
+    left:0;
+}
+.headbutton {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+form {
+    height: 100%;
+}
+footer {
+    position: absolute;
+    bottom: 0;
+    width:100%;
+    text-align: right;
+    background-color: rgb(255, 255, 128);
+}
 h5 {
     text-align: center;
 }
-.navul  {
+
+.navul {
     list-style: none;
     padding: 0;
-    }
+}
     .navul li {
-    padding: 10px 30px;
-    background: linear-gradient(to left, #f8ab8d 0%, white, #f8ab8d);
-    border-bottom: 1px solid grey;
-    color: #506a6b;
-    font-size: 20px;
-    box-shadow: 0 5px 5px 0 rgba(0,0,0, .2);
-    margin-bottom: 5px;
+        padding: 10px 30px;
+        background: linear-gradient(to left, #f8ab8d 0%, white, #f8ab8d);
+        border-bottom: 1px solid grey;
+        color: #506a6b;
+        font-size: 20px;
+        box-shadow: 0 5px 5px 0 rgba(0,0,0, .2);
+        margin-bottom: 5px;
     }
-    .navul li:last-child {border-bottom: none;}
-    A:link { 
-        text-decoration: none; /* Убирает подчеркивание для ссылок */
-       } 
-       A:visited { text-decoration: none; } 
-       A:active { text-decoration: none; }
-       A:hover {
-        text-decoration: underline; /* Делает ссылку подчеркнутой при наведении на нее курсора */
-        color: red; /* Цвет ссылки */
-       }
+        .navul li:last-child {
+            border-bottom: none;
+        }
+A:link {
+    text-decoration: none; 
+}
+A:visited {
+    text-decoration: none;
+}
+A:active {
+    text-decoration: none;
+}
+A:hover {
+    text-decoration: underline; 
+    color: red; 
+}

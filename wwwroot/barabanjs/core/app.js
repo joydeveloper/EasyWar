@@ -19,7 +19,7 @@ class AppX {
     }
     Start() {
         let htmlsetconfig = {
-            nav: ['Еще раз'],
+            nav: ['Игра'],
             navhref: ['index.html'],
 
         };
@@ -44,7 +44,6 @@ class AppX {
                 break;
             default: {
                 console.log();
-
             }
                 break;
         }
