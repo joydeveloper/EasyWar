@@ -15,26 +15,26 @@
     <script src="barabanjs/core/privatebuilder.js"></script>
     <script src="barabanjs/core/htmlset.js"></script>
     <script src="https://pixijs.download/release/pixi.min.js"></script>
+
     <script src="gamejs/gamemanager.js"></script>
     <script src="gamejs/gameobjects.js"></script>
+    <script src="gamejs/player.js"></script>
     <script src="gamejs/playermanager.js"></script>
     <script src="gamejs/units.js"></script>
     <script src="gamejs/ui.js"></script>
     <link href="css/site.css" rel="stylesheet" type="text/css">
     <link href="css/adaptive.css" rel="stylesheet">
 </head>
-<body onload="loadScript('barabanjs/core/startup.js', script => { appx.Start() });" >
+<body onload="loadScript('barabanjs/core/startup.js', script => { appx.Start() });">
     <nav> <div align="center"><header><h1 id="status">EasyWar</h1></header></div></nav>
     <script src="gamejs/utils.js"></script>
     <canvas id='mainscene'></canvas>
     <script>
-        consolelog('width', window.screen.width);
-        consolelog('height', window.screen.height);
-        SceneManager.initialize(window.screen.width-19, window.screen.height-150, 'black');
+        SceneManager.initialize(window.screen.width - 19, window.screen.height - 150, 'white');
     </script>
-    <article></article>
+    <article ></article>
     <aside></aside>
-    <footer ><p>Scyga inc 2022 &nbsp &nbsp </p></footer>
+    <footer><p>Scyga inc 2022 &nbsp &nbsp </p></footer>
 </body>
 </html>
 
