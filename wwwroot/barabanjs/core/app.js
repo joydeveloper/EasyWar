@@ -5,7 +5,6 @@ const MAC = 2;
 const ANDROID = 3;
 const IPHONE = 4;
 const IPAD = 5;
-
 class AppX {
     constructor(appconfig) {
         this.appconfig = appconfig;
@@ -21,11 +20,9 @@ class AppX {
         let htmlsetconfig = {
             nav: ['Игра'],
             navhref: ['index.html'],
-
         };
         switch (this.appconfig.apptype) {
             case 'htmlset': {
-
                 var apptype = new HTMLSet(htmlsetconfig);
                 apptype.BuildNav();
             }
@@ -56,13 +53,11 @@ class AppX {
     }
     DefaultAppSetup() {
 
-
     }
     CookieProc() {
         if (this.isFirstStartup == false) {
             var expires = 60 * 60 * 24;
             setCookie('user', 'visitor', { expires });
-
         }
         else {
             getCookie('user');

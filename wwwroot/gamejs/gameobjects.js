@@ -1,4 +1,5 @@
 ﻿class GameObject {
+    name;
     constructor(x, y, anchor) {
         this.x = x;
         this.y = y;
@@ -63,4 +64,13 @@ function drawSqAllocField(x,y) {
     graphics.drawRect(x, y, SceneManager.currentScene._width,170);
     graphics.endFill();
     return graphics;
+}
+function drawBattleField(x, y) {
+    const graphics = new PIXI.Graphics();
+    graphics.lineStyle(5, 0xFEEB77, 5);
+    graphics.beginFill(0x650A5A);
+    graphics.drawRect(x, y, SceneManager.currentScene._width, SceneManager.currentScene._height-100);
+    graphics.endFill();
+    return graphics;
+
 }
