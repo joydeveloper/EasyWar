@@ -57,3 +57,10 @@ function drawHLine(x, y) {
     graphics.lineTo(SceneManager.currentScene._width,y);
     return graphics;
 }
+function drawSqAllocField(x,y) {
+    const graphics = new PIXI.Graphics();
+    graphics.beginFill(0xA3EE97);
+    graphics.drawRect(x, y, SceneManager.currentScene._width,170);
+    graphics.endFill();
+    return graphics;
+}
