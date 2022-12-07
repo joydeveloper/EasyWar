@@ -178,6 +178,8 @@ class Game {
         SceneManager.game.switchState(3);
         SceneManager.currentScene.getChildByName("landing").destroy();
         UIManager.controlPanel();
+       // console.log(PlayerManager.players[0].units);
+    
     }
     onProcessWar() {
         //console.log("war");

@@ -28,21 +28,33 @@
             currentunit.target.transform.position.y = event.global.y;
             if (currentunit.target.transform.position.y < 495 + currentunit.target.getBounds().height) {
                 currentunit.target.transform.scale.set(0.5);
-                currentunit.target.transform.rotation = -55;
+                currentunit.target.transform.rotation =-55;
             }
             else {
                 currentunit.target.transform.rotation = 0;
             }
         }
-   
         SceneManager.currentScene.getChildByName("battleField").interactive = false;
-    }
-    fieldBattleClick(event) {
-       
     }
     unitClick(event) {
         currentunit = Object.assign({}, event.data);
         SceneManager.currentScene.getChildByName("battleField").interactive = true;
+    }
+    fieldBattleClick(event) {
+        if (currentunit) {
+            let cur = new PIXI.Point(currentunit.target.transform.position.x, currentunit.target.transform.position.y);
+            let move = new PIXI.Point(event.global.x, event.global.y);
+            console.log(cur);
+            console.log(move);
+        }
+        console.log("blc");
+    }
+
+    unitBattleClick(event) {
+        currentunit = Object.assign({}, event.data);
+        ceneManager.currentScene.getChildByName("battleField").interactive = true;
+        console.log("ubc");
+
     }
     onUnitLocate() {
         this.units.forEach((element) => {
@@ -54,10 +66,28 @@
         });
         SceneManager.currentScene.getChildByName("battleField").on('pointerdown', this.fieldLocClick);
     }
+    addEventListnersOnBattle(element) {
+        this.element = element;
+        this.element
+            .on('pointerdown', this.unitBattleClick);
+    }
     onStartBattle() {
         this.removeEventListnerOnLocate();
         SceneManager.currentScene.getChildByName("battleField").off('pointerdown', this.fieldLocClick);
         SceneManager.currentScene.getChildByName("battleField").on('pointerdown', this.fieldBattleClick);
+        this.upgradeToBattleUnits();
+        currentunit = null;
+    }
+    upgradeToBattleUnits() {
+        const actions = ["Move", "Atack", "Hide", "Hold"];
+        this.units.forEach((el) => {
+            this.units.push(UnitFactory.upgradeGameObjToUnit(el, 1, 1, 1, 1, 1, actions));
+            this.units.shift();
+        })
+        this.units.forEach((element) => {
+            element.cursor = 'copy';
+            this.addEventListnersOnBattle(element.graphics);
+        })
     }
     addEventListnersOnLocate(element) {
         this.element = element;
@@ -102,7 +132,7 @@
     onDragEnd() {
         if (this.data) {
             try {
-                if (this.data.target.transform.position.y < 495 + this.data.currentTarget.getBounds().height) {
+                if (this.data.target.transform.position.y < 500+ this.data.currentTarget.getBounds().height) {
                     this.transform.scale.set(0.5);
                     this.transform.rotation = -55;
                     PlayerManager.players[0].units.forEach((el) => {
@@ -111,13 +141,14 @@
                             this.data = null;
                         }
                     });
+                } else {
+                    this.transform.scale.set(0.5);
+                    this.transform.rotation = 0;
+               
                 }
-            } catch (err) { this.transform.scale.set(0.5); }
+            } catch (err) { this.transform.scale.set(0.5);  }
         }
-            else {
-                this.transform.scale.set(0.5);
-                this.transform.rotation = 0;
-            }
+       
         this.alpha = 1;
         this.dragging = false;
         this.data = null;

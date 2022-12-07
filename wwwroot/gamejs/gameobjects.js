@@ -1,5 +1,5 @@
 ﻿class GameObject {
-  
+    graphics;
     constructor(x, y, anchor) {
         this.x = x;
         this.y = y;

@@ -17,13 +17,19 @@
         this.players[0].changeState(1);
     }
     static onUnitsLocate() {
+        const texttostart = new PIXI.Text('Start battle', new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 50 }));
+        texttostart.y = SceneManager.currentScene.getChildByName("landing").getBounds().y;
         if (PlayerManager.players[0].checkLocations()) {
-            const texttostart = new PIXI.Text('Start battle', new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 50 }));
-            texttostart.y = SceneManager.currentScene.getChildByName("landing").getBounds().y;
-            SceneManager.currentScene.getChildByName("landing").addChild(texttostart);
-            texttostart.interactive = true;
-            texttostart.on('pointerdown', SceneManager.game.onBattleStart);
-            console.log("locUp");
+            if (SceneManager.currentScene.getChildByName("landing").children.length <= 1) {
+                SceneManager.currentScene.getChildByName("landing").addChild(texttostart);
+                texttostart.interactive = true;
+                texttostart.on('pointerdown', SceneManager.game.onBattleStart);
+            }
+        }
+        else {
+            if (SceneManager.currentScene.getChildByName("landing").children.length == 2) {
+                SceneManager.currentScene.getChildByName("landing").removeChildAt(1);
+            }
         }
 
     }
