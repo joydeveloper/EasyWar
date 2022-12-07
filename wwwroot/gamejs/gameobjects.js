@@ -1,5 +1,5 @@
 ﻿class GameObject {
-    name;
+  
     constructor(x, y, anchor) {
         this.x = x;
         this.y = y;
@@ -72,5 +72,19 @@ function drawBattleField(x, y) {
     graphics.drawRect(x, y, SceneManager.currentScene._width, SceneManager.currentScene._height-100);
     graphics.endFill();
     return graphics;
-
+}
+function drawControlPanel(x, y) {
+    const graphics = new PIXI.Graphics();
+    graphics.beginFill(0xC9D4EF);
+    graphics.drawRect(x, y, SceneManager.currentScene._width, 170);
+    graphics.endFill();
+    return graphics;
+}
+function testForAABB(object1, object2) {
+    const bounds1 = object1.getBounds();
+    const bounds2 = object2.getBounds();
+    return bounds1.x < bounds2.x + bounds2.width
+        && bounds1.x + bounds1.width > bounds2.x
+        && bounds1.y < bounds2.y + bounds2.height
+        && bounds1.y + bounds1.height > bounds2.y;
 }

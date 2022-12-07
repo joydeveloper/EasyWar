@@ -55,6 +55,8 @@
         else {
 
             this.game.switchState(1);
+            scene.setUpdateFunction(PlayerManager.onUnitsLocate);
+            this.update();
         }
     }
     static fpsTest() {
@@ -82,6 +84,7 @@
     }
 }
 class Scene extends PIXI.Container {
+    func;
     constructor(width, height, path) {
         super();
         this.width = width;
@@ -126,7 +129,7 @@ class Scene extends PIXI.Container {
     }
 }
 class Game {
-    gamestates = ["loading","unitlocate", "warprocess", "gameover"];
+    gamestates = ["loading", "unitlocate","startbattle", "warprocess", "gameover"];
     constructor() {
         this.gamestate = this.gamestates[0];
     }
@@ -143,6 +146,14 @@ class Game {
                 this.onUnitsLocate();
                 break;
             }
+            case this.gamestates[2]: {
+                this.battleStart();
+                break;
+            }
+            case this.gamestates[3]: {
+                this.processWar();
+                break;
+            }
         }
     }
     switchState(state) {
@@ -150,12 +161,29 @@ class Game {
         this.checkState();
     }
     onUnitsLocate() {
-        this.x = SceneManager.currentScene._width / 2 - 200;
+        this.x = 200;
         this.y = SceneManager.currentScene._height - 200;
         this.battlFieldSetup();
         this.uiSetup();
         this.unitLandingSetup();
         this.playerSetup();
+    }
+    onBattleStart() {
+        UIManager.infoBox("War in process");
+        SceneManager.game.switchState(2);
+     
+    }
+    battleStart() {
+        PlayerManager.players[0].changeState(2);
+        SceneManager.game.switchState(3);
+        SceneManager.currentScene.getChildByName("landing").destroy();
+        UIManager.controlPanel();
+    }
+    onProcessWar() {
+        //console.log("war");
+    }
+    processWar() {
+        SceneManager.currentScene.setUpdateFunction(this.onProcessWar);
     }
     playerSetup() {
         PlayerManager.unitsSetup(this.x, this.y);
@@ -167,14 +195,10 @@ class Game {
         let battlefield = new GameObject(0, 0);
         battlefield.draw(drawBattleField);
         battlefield.graphics.name = "battleField";
-        battlefield.graphics.interactive = true;
         battlefield.create(SceneManager.currentScene);
     }
     unitLandingSetup() {
-        let landingfield = new GameObject(0, SceneManager.currentScene._height - 250);
-        landingfield.name = "landing";
-        landingfield.draw(drawSqAllocField);
-        landingfield.create();
+        UIManager.landingPanel();
     }
 }
 
