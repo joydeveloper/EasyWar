@@ -3,7 +3,7 @@
     constructor(x, y, anchor) {
         this.x = x;
         this.y = y;
-        this.anchor = anchor
+        this.anchor = anchor || 0;
     }
     create(scene) {
         if (scene === undefined) {

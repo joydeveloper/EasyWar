@@ -129,7 +129,7 @@ class Scene extends PIXI.Container {
     }
 }
 class Game {
-    gamestates = ["loading", "unitlocate","startbattle", "warprocess", "gameover"];
+    gamestates = ["loading", "unitlocate", "startbattle", "warprocess", "gameover"];
     constructor() {
         this.gamestate = this.gamestates[0];
     }
@@ -171,18 +171,34 @@ class Game {
     onBattleStart() {
         UIManager.infoBox("War in process");
         SceneManager.game.switchState(2);
-     
+
     }
     battleStart() {
         PlayerManager.players[0].changeState(2);
         SceneManager.game.switchState(3);
         SceneManager.currentScene.getChildByName("landing").destroy();
         UIManager.controlPanel();
-       // console.log(PlayerManager.players[0].units);
-    
+        // console.log(PlayerManager.players[0].units);
+
     }
     onProcessWar() {
-        //console.log("war");
+        try {
+            if (currentunit) {
+                if (currentunit.direct.x >= 0) {
+                    currentunit.target.transform.position.x += SceneManager.Gapp.ticker.deltaTime;
+                    currentunit.direct.x--;
+                }
+                if (currentunit.direct.y >= 0) {
+                    currentunit.target.transform.position.y += SceneManager.Gapp.ticker.deltaTime;
+                    currentunit.direct.y--;
+                }
+          // console.log(currentunit.target.transform.rotation=currentunit.rotationVal);
+            }
+        }
+        catch (e) {
+
+        }
+
     }
     processWar() {
         SceneManager.currentScene.setUpdateFunction(this.onProcessWar);

@@ -16,6 +16,7 @@
     <script src="barabanjs/core/htmlset.js"></script>
     <script src="https://pixijs.download/release/pixi.min.js"></script>
     <script src="gamejs/gamemanager.js"></script>
+    <script src="gamejs/vector.js"></script>
     <script src="gamejs/gameobjects.js"></script>
     <script src="gamejs/player.js"></script>
     <script src="gamejs/playermanager.js"></script>
@@ -30,10 +31,12 @@
     <canvas id='mainscene'></canvas>
     <script>
         SceneManager.initialize(window.screen.width - 19, window.screen.height - 150, 'white');
-       
-
+        let vec = new Vector2(1, 1);
+        let vec2 = new Vector2(2, 2);
       
-    
+        console.log(Vector2.lerp(vec,vec2,0.5));
+      
+
     </script>
     <article ></article>
     <aside></aside>

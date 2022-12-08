@@ -42,17 +42,38 @@
     }
     fieldBattleClick(event) {
         if (currentunit) {
-            let cur = new PIXI.Point(currentunit.target.transform.position.x, currentunit.target.transform.position.y);
-            let move = new PIXI.Point(event.global.x, event.global.y);
-            console.log(cur);
-            console.log(move);
+            currentunit.cur = new Vector(currentunit.target.transform.position.x, currentunit.target.transform.position.y);
+            currentunit.move = new Vector(event.global.x, event.global.y);
+            currentunit.direct = new Vector(event.global.x, event.global.y);
+            currentunit.rotation = new Vector(event.global.x, event.global.y);
+            currentunit.direct = currentunit.direct.sub(currentunit.cur);
+            //currentunit.direct.x = Math.abs(currentunit.direct.x);
+            //currentunit.direct.y = Math.abs(currentunit.direct.y);
+
+           // currentunit.rotationVal = Math.acos(currentunit.rotation.normalize().multiplyScalar(currentunit.cur.normalize()));
+           // currentunit.direct = currentunit.direct.normalize();
+          //  SceneManager.Gapp.ticker.stop();
+            //console.log(currentunit.cur);
+            //console.log(currentunit.rotation);
+            //console.log(currentunit.direct);
+         
+           // currentunit.rotation.normalize();
+          //  currentunit.direct.normalize();
+            currentunit.rotationVal = currentunit.rotation.multiplyScalar(currentunit.direct);
+            currentunit.rotationVal = (currentunit.rotationVal) * 180 / Math.PI;
+            console.log(currentunit.rotationVal);
+            console.log(currentunit.target.angle);
+
         }
-        console.log("blc");
+        else {
+           // SceneManager.Gapp.ticker.stop();
+        }
+       
     }
 
     unitBattleClick(event) {
         currentunit = Object.assign({}, event.data);
-        ceneManager.currentScene.getChildByName("battleField").interactive = true;
+        SceneManager.currentScene.getChildByName("battleField").interactive = true;
         console.log("ubc");
 
     }
@@ -134,7 +155,8 @@
             try {
                 if (this.data.target.transform.position.y < 500+ this.data.currentTarget.getBounds().height) {
                     this.transform.scale.set(0.5);
-                    this.transform.rotation = -55;
+                    this.transform.pivot.set(1);
+                    this.angle = 90;
                     PlayerManager.players[0].units.forEach((el) => {
                         if (testForAABB(this.data.target, el.graphics) && this.data.target != el.graphics) {
                             this.dragging = false;
@@ -156,7 +178,7 @@
     checkLocations() {
         let x = 0;
         for (let i = 0; i < PlayerManager.players[0].units.length; i++) {
-            if (PlayerManager.players[0].units[i].graphics.alpha == 1 && PlayerManager.players[0].units[i].graphics.transform.rotation == -55) {
+            if (PlayerManager.players[0].units[i].graphics.alpha == 1 && PlayerManager.players[0].units[i].graphics.angle == 90) {
                 x++;
             }
         }
