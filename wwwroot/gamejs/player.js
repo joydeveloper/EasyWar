@@ -28,7 +28,7 @@
             currentunit.target.transform.position.y = event.global.y;
             if (currentunit.target.transform.position.y < 495 + currentunit.target.getBounds().height) {
                 currentunit.target.transform.scale.set(0.5);
-                currentunit.target.transform.rotation =-55;
+                currentunit.target.angle =90;
             }
             else {
                 currentunit.target.transform.rotation = 0;
@@ -42,40 +42,21 @@
     }
     fieldBattleClick(event) {
         if (currentunit) {
-            currentunit.cur = new Vector(currentunit.target.transform.position.x, currentunit.target.transform.position.y);
-            currentunit.move = new Vector(event.global.x, event.global.y);
-            currentunit.direct = new Vector(event.global.x, event.global.y);
-            currentunit.rotation = new Vector(event.global.x, event.global.y);
-            currentunit.direct = currentunit.direct.sub(currentunit.cur);
-            //currentunit.direct.x = Math.abs(currentunit.direct.x);
-            //currentunit.direct.y = Math.abs(currentunit.direct.y);
-
-           // currentunit.rotationVal = Math.acos(currentunit.rotation.normalize().multiplyScalar(currentunit.cur.normalize()));
-           // currentunit.direct = currentunit.direct.normalize();
-          //  SceneManager.Gapp.ticker.stop();
-            //console.log(currentunit.cur);
-            //console.log(currentunit.rotation);
-            //console.log(currentunit.direct);
-         
-           // currentunit.rotation.normalize();
-          //  currentunit.direct.normalize();
-            currentunit.rotationVal = currentunit.rotation.multiplyScalar(currentunit.direct);
-            currentunit.rotationVal = (currentunit.rotationVal) * 180 / Math.PI;
-            console.log(currentunit.rotationVal);
-            console.log(currentunit.target.angle);
-
+            PlayerManager.players[0].units.forEach((el) => {
+                if (currentunit.target === el.graphics)
+                    currentunit = el;
+            })
         }
         else {
            // SceneManager.Gapp.ticker.stop();
         }
-       
+        currentunit.curdest = new Vector2(event.global.x, event.global.y);      
+
     }
 
     unitBattleClick(event) {
         currentunit = Object.assign({}, event.data);
         SceneManager.currentScene.getChildByName("battleField").interactive = true;
-        console.log("ubc");
-
     }
     onUnitLocate() {
         this.units.forEach((element) => {
@@ -102,11 +83,11 @@
     upgradeToBattleUnits() {
         const actions = ["Move", "Atack", "Hide", "Hold"];
         this.units.forEach((el) => {
-            this.units.push(UnitFactory.upgradeGameObjToUnit(el, 1, 1, 1, 1, 1, actions));
+            this.units.push(UnitFactory.upgradeGameObjToUnit(el, 1, 1, 1, 10, 1, actions));
             this.units.shift();
         })
         this.units.forEach((element) => {
-            element.cursor = 'copy';
+            element.graphics.cursor = 'copy';
             this.addEventListnersOnBattle(element.graphics);
         })
     }

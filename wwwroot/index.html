@@ -31,14 +31,18 @@
     <canvas id='mainscene'></canvas>
     <script>
         SceneManager.initialize(window.screen.width - 19, window.screen.height - 150, 'white');
-        let vec = new Vector2(1, 1);
-        let vec2 = new Vector2(2, 2);
-      
-        console.log(Vector2.lerp(vec,vec2,0.5));
-      
-
+        const app = new PIXI.Application({ antialias: true });
+        document.body.appendChild(app.view);
+        let vector = new Vector2(185, 425);
+        let vector2 = new Vector2(4, 3);
+            //let x = Vector2.dot(vector, vector2) / (vector.lenght * vector2.lenght);
+            //console.log(Vector2.angle(vector, vector2));
+            //console.log(vector.lenght, vector2.lenght);
+            //console.log(Math.cos(0.12));
+        /*    console.log(Vector2.rotate(vector,90));*/
+  
     </script>
-    <article ></article>
+    <article></article>
     <aside></aside>
     <footer><p>Scyga inc 2022 &nbsp &nbsp </p></footer>
 </body>

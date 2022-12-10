@@ -69,7 +69,7 @@ function drawBattleField(x, y) {
     const graphics = new PIXI.Graphics();
     graphics.lineStyle(5, 0xFEEB77, 5);
     graphics.beginFill(0x650A5A);
-    graphics.drawRect(x, y, SceneManager.currentScene._width, SceneManager.currentScene._height-100);
+    graphics.drawRect(x, y, SceneManager.currentScene._width, SceneManager.currentScene._height-250);
     graphics.endFill();
     return graphics;
 }

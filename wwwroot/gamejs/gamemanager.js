@@ -6,6 +6,7 @@
     static _width;
     static _height;
     static game;
+  
     static get width() {
         return this._width;
     }
@@ -29,6 +30,7 @@
         texttostart.interactive = true;
         texttostart.on('pointerdown', this.startGame)
         this.Gapp.ticker.add((deltaTime) => this.update(deltaTime));
+        this.dt = this.Gapp.ticker.deltaTime;
         this.Gapp.stage.addChild(texttostart);
     }
     static changeScene(scene) {
@@ -132,6 +134,7 @@ class Game {
     gamestates = ["loading", "unitlocate", "startbattle", "warprocess", "gameover"];
     constructor() {
         this.gamestate = this.gamestates[0];
+        this.i = 0;
     }
     startGame() {
         const scene = new Scene(window.screen.width - 19, window.screen.height - 150, 'Assets/spriteinfo.json');
@@ -167,6 +170,7 @@ class Game {
         this.uiSetup();
         this.unitLandingSetup();
         this.playerSetup();
+       
     }
     onBattleStart() {
         UIManager.infoBox("War in process");
@@ -182,26 +186,19 @@ class Game {
 
     }
     onProcessWar() {
+       // console.log(SceneManager.Gapp.ticker.FPS);
         try {
             if (currentunit) {
-                if (currentunit.direct.x >= 0) {
-                    currentunit.target.transform.position.x += SceneManager.Gapp.ticker.deltaTime;
-                    currentunit.direct.x--;
-                }
-                if (currentunit.direct.y >= 0) {
-                    currentunit.target.transform.position.y += SceneManager.Gapp.ticker.deltaTime;
-                    currentunit.direct.y--;
-                }
-          // console.log(currentunit.target.transform.rotation=currentunit.rotationVal);
+               currentunit.move(currentunit.curdest);
             }
         }
         catch (e) {
 
         }
-
     }
     processWar() {
         SceneManager.currentScene.setUpdateFunction(this.onProcessWar);
+  
     }
     playerSetup() {
         PlayerManager.unitsSetup(this.x, this.y);
