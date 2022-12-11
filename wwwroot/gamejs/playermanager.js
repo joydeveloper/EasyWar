@@ -1,25 +1,32 @@
 ﻿class PlayerManager {
-    static units = ["general.png"];//, "support.png", "sniper.png", "trooper.png", "mortar.png", "moto.png", "tank.png"];
-    static players = [];
-    static playerSetup(playerunits) {
+    constructor() {
+        this.players = [];
+    }
+    static units = ["general.png", "support.png", "support.png"];//, "sniper.png", "trooper.png", "mortar.png", "moto.png", "tank.png"];
+    static scalefactor = 0.5;
+    playerSetup(playerunits) {
         this.players.push(new Player(playerunits));
     }
-    static unitsSetup(x, y) {
+    addplayer(player) {
+        this.players.push(player);
+    }
+    unitsSetup(x, y) {
         let units = [];
-        this.units.forEach((element) => {
+        PlayerManager.units.forEach((element) => {
             let go = new GameObject(x, y, 0.5);
             go.spriteFromCashe(element);
-            go.graphics.scale.set(0.5);
+            go.graphics.scale.set(PlayerManager.scalefactor);
             units.push(go);
             x += go.graphics.getBounds().width + 25;
         })
         this.playerSetup(units);
-        this.players[0].changeState(1);
+        this.players[0].switchState(1);
     }
-    static onUnitsLocate() {
+    onUnitsLocate() {
+     
         const texttostart = new PIXI.Text('Start battle', new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 50 }));
         texttostart.y = SceneManager.currentScene.getChildByName("landing").getBounds().y;
-        if (PlayerManager.players[0].checkLocations()) {
+        if (this.players[0].checkLocations()) {
             if (SceneManager.currentScene.getChildByName("landing").children.length <= 1) {
                 SceneManager.currentScene.getChildByName("landing").addChild(texttostart);
                 texttostart.interactive = true;
@@ -34,5 +41,6 @@
 
     }
 }
+
 
 

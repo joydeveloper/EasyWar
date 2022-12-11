@@ -1,9 +1,10 @@
 ﻿class GameObject {
     graphics;
     constructor(x, y, anchor) {
-        this.x = x;
-        this.y = y;
+        this.x = x || 0;;
+        this.y = y || 0;;
         this.anchor = anchor || 0;
+        this.isCollising = false;
     }
     create(scene) {
         if (scene === undefined) {
@@ -87,4 +88,17 @@ function testForAABB(object1, object2) {
         && bounds1.x + bounds1.width > bounds2.x
         && bounds1.y < bounds2.y + bounds2.height
         && bounds1.y + bounds1.height > bounds2.y;
+}
+function testForAABBRange(object1, object2, range) {
+    if (range === undefined)
+        range = 0;
+    const bounds1 = object1.getBounds();
+    const bounds2 = object2.getBounds();
+    return bounds1.x < bounds2.x + bounds2.width+range
+        && bounds1.x + bounds1.width+range > bounds2.x
+        && bounds1.y < bounds2.y + bounds2.height+range
+        && bounds1.y + bounds1.height+range > bounds2.y;
+}
+function getCenter(width, height) {
+    return new Vector2(width / 2, height / 2);
 }

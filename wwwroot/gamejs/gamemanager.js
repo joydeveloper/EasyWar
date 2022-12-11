@@ -1,12 +1,11 @@
 ﻿class SceneManager {
-
     constructor() { }
     static Gapp;
     static currentScene;
     static _width;
     static _height;
     static game;
-  
+
     static get width() {
         return this._width;
     }
@@ -29,6 +28,7 @@
         texttostart.y = window.screen.height / 2 - 200;
         texttostart.interactive = true;
         texttostart.on('pointerdown', this.startGame)
+        this.Gapp.ticker = PIXI.Ticker.shared;
         this.Gapp.ticker.add((deltaTime) => this.update(deltaTime));
         this.dt = this.Gapp.ticker.deltaTime;
         this.Gapp.stage.addChild(texttostart);
@@ -40,7 +40,19 @@
     }
     static update(framesPassed) {
         if (this.currentScene) {
-            this.currentScene.update();
+            try {
+                switch (this.game.gamestate) {
+                    case this.game.gamestates[1]: {
+                        this.game.playerManager.onUnitsLocate();
+                        break;
+                    }
+                    case this.game.gamestates[3]: {
+                        this.game.onProcessWar();
+                        break;
+                    }
+                }
+            }
+            catch (e) {console.log(e) }
         }
     }
     static clearScene() {
@@ -55,10 +67,8 @@
             setTimeout(() => { SceneManager.waitForLoading(scene, x += x); }, x);
         }
         else {
-
             this.game.switchState(1);
-            scene.setUpdateFunction(PlayerManager.onUnitsLocate);
-            this.update();
+            //this.update();
         }
     }
     static fpsTest() {
@@ -98,7 +108,7 @@ class Scene extends PIXI.Container {
         this.loaderbar.drawRect(window.screen.width / 2 - 100, window.screen.height / 2 - 200, 100, 50);
         this.loaderbar.endFill();
         this.isLoaded = false;
-        this.sortableChildren = true;
+        this.sortableChildren = false;
         this.zIndex = 1;
         SceneManager.Gapp.stage.addChild(this.loaderbar);
     }
@@ -125,9 +135,9 @@ class Scene extends PIXI.Container {
         }
         await this.sceneLoaded(gi);
     }
-    update() {
-        if (typeof this.func == 'function')
-            this.func();
+    update(func) {
+        if (typeof func == 'function')
+            func();
     }
 }
 class Game {
@@ -135,6 +145,8 @@ class Game {
     constructor() {
         this.gamestate = this.gamestates[0];
         this.i = 0;
+        this.playerManager = new PlayerManager();
+        // console.log(this.playerManager);
     }
     startGame() {
         const scene = new Scene(window.screen.width - 19, window.screen.height - 150, 'Assets/spriteinfo.json');
@@ -154,7 +166,7 @@ class Game {
                 break;
             }
             case this.gamestates[3]: {
-                this.processWar();
+                this.onProcessWar();
                 break;
             }
         }
@@ -170,38 +182,41 @@ class Game {
         this.uiSetup();
         this.unitLandingSetup();
         this.playerSetup();
-       
     }
     onBattleStart() {
         UIManager.infoBox("War in process");
         SceneManager.game.switchState(2);
-
     }
     battleStart() {
-        PlayerManager.players[0].changeState(2);
+      
+        this.playerManager.players[0].switchState(2);
         SceneManager.game.switchState(3);
         SceneManager.currentScene.getChildByName("landing").destroy();
         UIManager.controlPanel();
-        // console.log(PlayerManager.players[0].units);
-
     }
     onProcessWar() {
-       // console.log(SceneManager.Gapp.ticker.FPS);
+        // console.log(SceneManager.Gapp.ticker.FPS);
+        //this.playerManager.players[0].units.forEach((el) => 
+        //{
+        //    console.log(el.name);
+        //   // console.log(el.currentPosVec);
+        
+        //})
+      //  console.log(this.playerManager.players[0]);
         try {
-            if (currentunit) {
-               currentunit.move(currentunit.curdest);
-            }
+
+            this.playerManager.players[0].units.forEach((el) => el.move());
+            this.playerManager.players[0].units.forEach((el) => el.getcollising());
         }
         catch (e) {
-
+             console.log(e);
         }
     }
-    processWar() {
-        SceneManager.currentScene.setUpdateFunction(this.onProcessWar);
-  
+    checkUnitPositions() {
+        this.playerManager.onUnitsLocate();
     }
     playerSetup() {
-        PlayerManager.unitsSetup(this.x, this.y);
+        this.playerManager.unitsSetup(this.x, this.y);
     }
     uiSetup() {
         UIManager.setGrid(10);

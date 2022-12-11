@@ -34,7 +34,7 @@
 },
 "support.png":
 {
-	"frame": {"x":0,"y":0,"w":106,"h":72},
+	"frame": {"x":0,"y":0,"w":106,"h":92},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":106,"h":72},

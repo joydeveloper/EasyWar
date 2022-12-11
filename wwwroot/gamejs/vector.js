@@ -46,7 +46,7 @@
         else
             return false;
     }
-    newSet(x, y) {
+    set(x, y) {
         this.x = x;
         this.y = y;
     }
