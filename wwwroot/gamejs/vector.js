@@ -1,6 +1,6 @@
 ﻿class Vector2 {
     constructor(x, y) {
-        this.x = x||0;
+        this.x = x || 0;
         this.y = y || 0;
         if (typeof (x) === "object") {
             this.x = x.x || 0;
@@ -9,8 +9,9 @@
     }
 
     get lenght() { return Math.sqrt(this.x * this.x + this.y * this.y); }
-    get right() { return new Vector2(this.y, -this.x); }
-    get left() { return new Vector2(-this.y, this.x); }
+    get up() { return new Vector2(this.x, -this.y); }
+    get left() { return new Vector2(this.y, -this.x); }
+    get right() { return new Vector2(-this.y, this.x); }
     get back() { return new Vector2(-this.x, this.y); }
     get sqrLenght() { return this.x * this.x + this.y * this.y }
     get floor() {
@@ -39,7 +40,7 @@
         else
             return false;
     }
- 
+
     floorequals(vector) {
         if (Math.floor(this.x) == Math.floor(vector.x) && Math.floor(this.y) == Math.floor(vector.y))
             return true;
@@ -78,14 +79,34 @@
         return this.x * vector.x + this.y * vector.y;
     }
     distance(vector) {
-       return new Vector2(this.x - vector.x, this.y - vector.y).lenght;
+        return new Vector2(this.x - vector.x, this.y - vector.y).lenght;
     }
     angle(vector) {
-        let res= radTodeg(Math.acos(Vector2.dot(this.normalized, vector.normalized)));
+        let res = radTodeg(Math.acos(Vector2.dot(this.normalized, vector.normalized)));
         if (!isNaN(res))
             return res;
         else
             return 0;
+    }
+    static movetowards(vectora, vectorb, velocity) {
+        let dx = vectora.x - vectorb.x;
+        let dy = vectora.y - vectorb.y;
+        let r = Vector2.sub(vectora.floor, vectorb.floor).lenght;
+        let angle = Math.atan2(dy, dx);
+        const graphics = new PIXI.Graphics();
+        graphics.lineStyle(2, 0xFFFF00, 1);
+        let c_x = vectora.x;
+        let c_y = vectora.y;
+        let x, y;
+        x = r * Math.cos(0) + c_x;
+        y = r * Math.sin(0) + c_y;
+        graphics.moveTo(vectora.x, vectora.y);
+        x = r * Math.cos(angle) + c_x;
+        y = r * Math.sin(angle) + c_y;
+        graphics.lineTo(x, y);
+        graphics.endFill();
+        //SceneManager.currentScene.addChild(graphics);
+        return new Vector2(Math.cos(angle)*velocity, Math.sin(angle)*velocity);
     }
     static up() {
         return new Vector2(0, 1);
@@ -127,7 +148,7 @@
         vec.y = point.x * Math.sin(angle) + point.y * Math.cos(angle);
         return vec;
     }
-    static lerp(vector1, vector2, t) { 
+    static lerp(vector1, vector2, t) {
         let vec = new Vector2();
         vec.x = vector1.x + t * (vector2.x - vector1.x);
         vec.y = vector1.y + t * (vector2.y - vector1.y);
@@ -136,7 +157,7 @@
     }
     static lerpP(vector1, vector2, t) {
         let vec = new Vector2();
-        vec.x = (1-t)*vector1.x + t * vector2.x;
+        vec.x = (1 - t) * vector1.x + t * vector2.x;
         vec.y = (1 - t) * vector1.y + t * vector2.y;
         return vec;
 
@@ -153,11 +174,11 @@ function rotateLerp(A, B, w) {
     return Math.atan2(SN * deg2rad, CS * deg2rad);
 }
 function rotateLerpS(a, b, t) {
-   
-    a = a+ t * (b - a);
+
+    a = a + t * (b - a);
     b = b + t * (b - a);
     console.log(Math.atan2(a, b));
-    return (a+b/2);
+    return (a + b / 2);
 
 }
 const deg2rad = (Math.PI * 2) / 360;

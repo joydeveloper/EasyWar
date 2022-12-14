@@ -29,7 +29,8 @@
         texttostart.interactive = true;
         texttostart.on('pointerdown', this.startGame)
         this.Gapp.ticker = PIXI.Ticker.shared;
-        this.Gapp.ticker.add((deltaTime) => this.update(deltaTime));
+        //this.Gapp.ticker.speed = 0.2;
+        this.Gapp.ticker.add((deltaMS) => this.update(deltaMS));
         this.dt = this.Gapp.ticker.deltaTime;
         this.Gapp.stage.addChild(texttostart);
     }
@@ -184,7 +185,7 @@ class Game {
         this.playerSetup();
     }
     onBattleStart() {
-        UIManager.infoBox("War in process");
+        UIManager.infoBox(SceneManager.Gapp.ticker.FPS);
         SceneManager.game.switchState(2);
     }
     battleStart() {
@@ -195,6 +196,7 @@ class Game {
         UIManager.controlPanel();
     }
     onProcessWar() {
+        SceneManager.currentScene.getChildByName("ibox").children[0].text ="FPS:"+Math.floor(SceneManager.Gapp.ticker.FPS);
         // console.log(SceneManager.Gapp.ticker.FPS);
         //this.playerManager.players[0].units.forEach((el) => 
         //{

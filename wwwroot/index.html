@@ -32,17 +32,38 @@
     <script>
         SceneManager.initialize(window.screen.width - 19, window.screen.height - 150, 'white');
        
-       
-   
+
+       /* console.log(test);*/
+        let x = 0;
+        switch (x) {
+            case 1: {
+                console.log(PIXI);;
+                break;
+            }
+            case 2: {
+                console.log(SceneManager.Gapp);;
+                break;
+            }
+            case 3: {
+                console.log(new PIXI.Graphics());
+                break;
+            }
+            default:
+                break;
+        }
+        //let tv = new Vector2(1, 1);
+        //console.log(tv.rotate(1));
         //const app = new PIXI.Application({ antialias: true });
         //document.body.appendChild(app.view);
-        //let vector = new Vector2(185, 425);
+        let dir = new Vector2(524,331);
+        let for1 = new Vector2(478, 215);
         //let vector2 = new Vector2(4, 3);
             //let x = Vector2.dot(vector, vector2) / (vector.lenght * vector2.lenght);
-            //console.log(Vector2.angle(vector, vector2));
+            console.log(Vector2.dot(dir, for1));
             //console.log(vector.lenght, vector2.lenght);
             //console.log(Math.cos(0.12));
         /*    console.log(Vector2.rotate(vector,90));*/
+        //console.log(Vector2.angle(vectora, vectorb));
   
     </script>
     <article></article>

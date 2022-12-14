@@ -1,8 +1,9 @@
 ﻿class PlayerManager {
     constructor() {
         this.players = [];
+        this.rotate = this.rotate.bind(this);
     }
-    static units = ["general.png", "support.png", "support.png"];//, "sniper.png", "trooper.png", "mortar.png", "moto.png", "tank.png"];
+    static units = ["general.png"]//, "support.png", "support.png", "sniper.png", "trooper.png", "mortar.png", "moto.png", "tank.png"];
     static scalefactor = 0.5;
     playerSetup(playerunits) {
         this.players.push(new Player(playerunits));
@@ -23,7 +24,7 @@
         this.players[0].switchState(1);
     }
     onUnitsLocate() {
-     
+      
         const texttostart = new PIXI.Text('Start battle', new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 50 }));
         texttostart.y = SceneManager.currentScene.getChildByName("landing").getBounds().y;
         if (this.players[0].checkLocations()) {
@@ -39,6 +40,13 @@
             }
         }
 
+    }
+    rotate(angle) {
+       // console.log(angle);
+        SceneManager.Gapp.ticker.start();
+        this.players[0].units[0].graphics.angle += angle;
+       // SceneManager.Gapp.ticker.stop();
+       // this.players[0].lastunit.graphics.transform.position.x += 50;
     }
 }
 

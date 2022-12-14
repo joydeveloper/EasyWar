@@ -7,6 +7,7 @@
         this.state = this.states[0];
         this.unitBattleClick = this.unitBattleClick.bind(this);
         this.fieldBattleClick = this.fieldBattleClick.bind(this);
+
     }
     switchState(state) {
         this.state = this.states[state];
@@ -30,7 +31,7 @@
             currentunit.target.transform.position.y = event.global.y;
             if (currentunit.target.transform.position.y < 495 + currentunit.target.getBounds().height) {
                 currentunit.target.transform.scale.set(PlayerManager.scalefactor);
-                currentunit.target.angle = 90;
+                currentunit.target.angle = startunitangle;
             }
             else {
                 currentunit.target.transform.rotation = 0;
@@ -50,6 +51,8 @@
                     el.destPosVec = new Vector2(event.global.x, event.global.y);
                 }
             })
+      
+      //SceneManager.Gapp.ticker.start();
     }
     unitBattleClick(event) {
         this.units.forEach((curunit) => {
@@ -59,6 +62,7 @@
                 //console.log(this.lastunit);
             }
         })
+      // SceneManager.Gapp.ticker.stop();
         SceneManager.currentScene.getChildByName("battleField").interactive = true;
     }
     onUnitLocate() {
@@ -87,6 +91,7 @@
         this.units.forEach((protounit) => {
             let unit = (UnitFactory.upgradeGameObjToUnit(protounit, 1, 1, 1, 10, 1, actions));
             this.units.splice(this.units.indexOf(protounit), 1, unit);
+            //use foreach[item,index];
         })
         this.units.forEach((unit) => {
             unit.graphics.cursor = 'copy';
@@ -156,7 +161,7 @@
                 if (this.data.target.transform.position.y < 500 + this.data.currentTarget.getBounds().height) {
                     this.transform.scale.set(PlayerManager.scalefactor);
                     this.transform.pivot.set(1);
-                    this.angle = 90;
+                    this.angle = startunitangle;
                     //this.units.forEach((el) => {
                     //    if (testForAABB(this.data.target, el.graphics) && this.data.target != el.graphics) {
                     //        this.dragging = false;
@@ -179,7 +184,7 @@
        // console.log("c");
         let x = 0;
         for (let i = 0; i < this.units.length; i++) {
-            if (this.units[i].graphics.alpha == 1 && this.units[i].graphics.angle == 90) {
+            if (this.units[i].graphics.alpha == 1 && this.units[i].graphics.angle == startunitangle) {
                 x++;
             }
         }
@@ -203,6 +208,6 @@
 
 }
 var currentunit = null;
-
-
+const startunitangle =90;
+var activeunit = null;
 

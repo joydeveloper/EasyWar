@@ -1,7 +1,10 @@
 ﻿class Unit extends GameObject {
     currentPosVec;
     destPosVec;
+    forwardvec;
     name;
+    dtangle;
+    dir;
     constructor(x, y, anchor, damage, range, cooldown, velocity, armor, actions) {
         super(x, y, anchor);
         this.damage = damage;
@@ -16,75 +19,124 @@
         this.mass = 10;
         this.acceleration = new Vector2();
         this.isMoving = false;
+        this.minrotangle = 10;
+        this.strafespeed = 33;
+        this.fjumpspeed = 30;
+
     }
     move() {
         try {
-           
-            let dir = Vector2.sub(this.destPosVec, this.currentPosVec);
-            if (Math.floor(dir.x) != 0) {
-                this.graphics.transform.position.x += SceneManager.dt * this.velocityX + this.velocity * Math.sign(dir.x);
-            }
-            if (Math.floor(dir.y) != 0) {
-                this.graphics.transform.position.y += SceneManager.dt * this.velocityX + this.velocity * Math.sign(dir.y);
-            }
-            let angle = this.getangle();
-            if (angle > 15)
-                this.graphics.angle += angle;
-            if (Math.floor(dir.lenght) < 2) {
-                this.isMoving = false;
-                //   console.log(this.name + " waiting");
+            this.dir = Vector2.sub(this.destPosVec, this.currentPosVec).floor;
+            this.forwardvec = this.getforward();
+            this.dtangle = this.getangle();
+            if (Math.floor(this.dir.lenght) > 2) {
+                this.isMoving = true;
+                this.graphics.transform.position.x += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).x;
+                this.graphics.transform.position.y += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).y;
+                this.rotate();
+                console.log("Rotate", this.graphics.rotation);
+                console.log("DT", this.dtangle);
             }
             else {
-                this.isMoving = true;
-                // console.log(this.name + " moving");
-                console.log(dir.lenght);
+                this.isMoving = false;
             }
-            this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y)
+
+            this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y);
+            // SceneManager.Gapp.ticker.stop();
         }
-        catch (e) { }
+        catch (e) { console.log(e) }
+    }
+    rotate() {
+        //const graphics = new PIXI.Graphics();
+        //graphics.lineStyle(2, 0x00FF00, 1);
+        //graphics.moveTo(this.forwardvec.x, this.forwardvec.y);
+        //graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
+        //SceneManager.currentScene.addChild(graphics);
+        if (Math.abs(this.dtangle) > this.minrotangle) {
+            console.log(this.dtangle);
+            let sign = Math.sign(wherepoint(this.currentPosVec, this.forwardvec, this.destPosVec));
+            this.graphics.angle += Math.floor(this.dtangle * sign);
+            if (this.graphics.angle >= 360 || this.graphics.angle <= -360) {
+                this.graphics.angle = Math.floor(this.graphics.angle / 360);
+            }
+        }
     }
     getforward() {
-        const graphics = new PIXI.Graphics();
-        graphics.lineStyle(2, 0xFFFFFF, 1);
-        let c_x = this.currentPosVec.x;
-        let c_y = this.currentPosVec.y;
         let r = Vector2.sub(this.destPosVec.floor, this.currentPosVec.floor).lenght;
-        let x, y;
-        x = r * Math.cos(0) + c_x;
-        y = r * Math.sin(0) + c_y;
-        graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
-        x = r * Math.cos(deg2rad * this.graphics.angle - 90) + c_x;
-        y = r * Math.sin(deg2rad * this.graphics.angle - 90) + c_y;
-        graphics.lineTo(x, y);
-        graphics.endFill();
-        //SceneManager.currentScene.addChild(graphics);
-        return new Vector2(x, y);
+        let curangle = Math.floor(this.graphics.angle - 90);
+        //console.log("cur", curangle);
+        let gabarite = getCenter(this.graphics.getBounds().width, this.graphics.getBounds().height).lenght;
+        if (r > gabarite / 2) {
+            //const graphics = new PIXI.Graphics();
+            //graphics.lineStyle(2, 0xFFFFFF, 1);
+            let c_x = this.currentPosVec.x;
+            let c_y = this.currentPosVec.y;
+            let x, y;
+            graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
+            x = r * Math.cos(deg2rad * curangle) + c_x;
+            y = r * Math.sin(deg2rad * curangle) + c_y;
+            //graphics.lineTo(x, y);
+            //graphics.endFill();
+            // SceneManager.currentScene.addChild(graphics);
+            //SceneManager.Gapp.ticker.stop();
+            return new Vector2(x, y);
+        }
+        else {
+            return new Vector2();
+        }
+
     }
     getangle() {
         const graphics = new PIXI.Graphics();
         graphics.lineStyle(2, 0xFF0000, 1);
-        let dir = Vector2.sub(this.destPosVec.floor, this.currentPosVec.floor);
-        let forward = this.getforward().forward(this.currentPosVec.floor);
-        let angle = Vector2.angle(forward.floor.invert(), dir.floor);
-        if (dir.x == 0 || dir.y == 0) {
-            angle = 0;
-        }
-        if (Math.floor(dir.lenght) < 2)
-            angle = 0;
+        let angle = Vector2.angle(this.forwardvec.forward(this.currentPosVec).floor, this.dir.floor);
         graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
         graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
         graphics.endFill();
         // SceneManager.currentScene.addChild(graphics);
-        return Math.floor(angle);
+        return 180 - angle;
     }
+    strafeleft() {
+        let forward = this.getforward();
+        let fl = forward.left;
+        let fc = this.currentPosVec.left;
+        let res = Vector2.sub(fl, fc);
+        res.normalize();
+        this.graphics.transform.position.x += res.x * this.strafespeed;
+        this.graphics.transform.position.y += res.y * this.strafespeed;
+        SceneManager.Gapp.ticker.stop();
+        return fl;
+    }
+    straferight() {
+        let forward = this.getforward();
+        let fl = forward.right;
+        let fc = this.currentPosVec.right;
+        let res = Vector2.sub(fl, fc);
+        res.normalize();
+        this.graphics.transform.position.x += res.x * this.strafespeed;
+        this.graphics.transform.position.y += res.y * this.strafespeed;
+        SceneManager.Gapp.ticker.stop();
+        return fl;
+    }
+    pushforward() {
+        let vec = Vector2.movetowards(this.getforward(), this.currentPosVec, this.fjumpspeed);
+        this.graphics.transform.position.x += vec.x;
+        this.graphics.transform.position.y += vec.y;
+        SceneManager.Gapp.ticker.stop();
+    }
+    stop() {
+        this.destPosVec = null;
+        this.isMoving = false;
+    }
+
     getcollising() {
         if (this.isMoving) {
-           
             this.acceleration.set(this.acceleration.x * 0.99, this.acceleration.y * 0.99);
-            this.acceleration.set(Math.cos(this.getangle()) * this.velocity, Math.sin(this.getangle()) * this.velocity);
+            this.acceleration.set(Math.cos(this.dtangle) * this.velocity, Math.sin(this.dtangle) * this.velocity);
             SceneManager.game.playerManager.players[0].units.forEach((el) => {
                 if (testForAABBRange(this.graphics, el.graphics) && this.graphics != el.graphics) {
                     this.isMoving = false;
+                    this.strafeleft();
                     const collisionPush = collisionResponse(el, this);
                     this.acceleration.set(
                         (collisionPush.x * el.mass),
@@ -100,7 +152,6 @@
                     this.graphics.transform.position.y += this.acceleration.y * SceneManager.dt;
                 }
             })
-           
         }
     }
 }
@@ -122,10 +173,7 @@ class UnitFactory {
         return unit;
     }
     static createUnit(unittype) {
-
     }
-    
-
 }
 function collisionResponse(object1, object2) {
     if (!object1 || !object2) {
@@ -143,10 +191,16 @@ function collisionResponse(object1, object2) {
     );
     const speed = vRelativeVelocity.x * vCollisionNorm.x
         + vRelativeVelocity.y * vCollisionNorm.y;
-    const impulse = 2* speed / (object1.mass + object2.mass);
-    console.log(impulse + "|" + object1.mass + "|" + speed);
+    const impulse = 2 * speed / (object1.mass + object2.mass);
+    //console.log(impulse + "|" + object1.mass + "|" + speed);
     return new Vector2(
         impulse * vCollisionNorm.x,
         impulse * vCollisionNorm.y,
     );
+}
+var test = 0;
+function wherepoint(vectora, vectorb, point) {
+    s = (vectorb.x - vectora.x) * (point.y - vectora.y) - (vectorb.y - vectora.y) * (point.x - vectora.x)
+    return s;
+
 }
