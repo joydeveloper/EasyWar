@@ -29,16 +29,15 @@
             this.dir = Vector2.sub(this.destPosVec, this.currentPosVec).floor;
             this.forwardvec = this.getforward();
             this.dtangle = this.getangle();
-            if (Math.floor(this.dir.lenght) > 2) {
+            if (this.dir.lenght > this.graphics.getBounds().width*0.4 || this.dir.lenght > this.graphics.getBounds().height*0.4) {
                 this.isMoving = true;
                 this.graphics.transform.position.x += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).x;
                 this.graphics.transform.position.y += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).y;
                 this.rotate();
-                console.log("Rotate", this.graphics.rotation);
-                console.log("DT", this.dtangle);
             }
             else {
                 this.isMoving = false;
+               // SceneManager.Gapp.ticker.stop();
             }
 
             this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y);
@@ -65,19 +64,20 @@
         let r = Vector2.sub(this.destPosVec.floor, this.currentPosVec.floor).lenght;
         let curangle = Math.floor(this.graphics.angle - 90);
         //console.log("cur", curangle);
+        //console.log("r", r);
         let gabarite = getCenter(this.graphics.getBounds().width, this.graphics.getBounds().height).lenght;
-        if (r > gabarite / 2) {
-            //const graphics = new PIXI.Graphics();
-            //graphics.lineStyle(2, 0xFFFFFF, 1);
+        if (r > gabarite/2) {
+            const graphics = new PIXI.Graphics();
+            graphics.lineStyle(2, 0xFFFFFF, 1);
             let c_x = this.currentPosVec.x;
             let c_y = this.currentPosVec.y;
             let x, y;
             graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
             x = r * Math.cos(deg2rad * curangle) + c_x;
             y = r * Math.sin(deg2rad * curangle) + c_y;
-            //graphics.lineTo(x, y);
-            //graphics.endFill();
-            // SceneManager.currentScene.addChild(graphics);
+            graphics.lineTo(x, y);
+            graphics.endFill();
+            //SceneManager.currentScene.addChild(graphics);
             //SceneManager.Gapp.ticker.stop();
             return new Vector2(x, y);
         }
@@ -87,12 +87,12 @@
 
     }
     getangle() {
-        const graphics = new PIXI.Graphics();
-        graphics.lineStyle(2, 0xFF0000, 1);
+        //const graphics = new PIXI.Graphics();
+        //graphics.lineStyle(2, 0xFF0000, 1);
         let angle = Vector2.angle(this.forwardvec.forward(this.currentPosVec).floor, this.dir.floor);
-        graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
-        graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
-        graphics.endFill();
+        //graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
+        //graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
+        //graphics.endFill();
         // SceneManager.currentScene.addChild(graphics);
         return 180 - angle;
     }
