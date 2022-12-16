@@ -27,19 +27,32 @@
         texttostart.x = window.screen.width / 2 - 100;
         texttostart.y = window.screen.height / 2 - 200;
         texttostart.interactive = true;
-        texttostart.on('pointerdown', this.startGame)
-        this.Gapp.ticker = PIXI.Ticker.shared;
-        //this.Gapp.ticker.speed = 0.2;
-        this.Gapp.ticker.add((deltaMS) => this.update(deltaMS));
-        this.dt = this.Gapp.ticker.deltaTime;
+        texttostart.on('pointerdown', this.startGame);
         this.Gapp.stage.addChild(texttostart);
+        this.Gapp.ticker = PIXI.Ticker.shared;
+        this.Gapp.ticker.speed = 1;
+        // this.Gapp.ticker.update((deltaMS) => this.update(deltaMS));
+
+        this.Gapp.ticker.autoStart = false;
+        this.Gapp.ticker.stop();
+        const animate = ((deltaTime) => {
+            this.update(deltaTime);
+            this.Gapp.render(this.currentScene);
+            requestAnimationFrame(animate);
+        });
+        animate(performance.now());
+        this.Gapp.ticker.isStart = true;
+        this.Gapp.ticker.start();
+        this.dt = this.Gapp.ticker.deltaTime;
+
     }
     static changeScene(scene) {
         this.clearScene();
         this.currentScene = scene;
         this.Gapp.stage.addChild(scene);
     }
-    static update(framesPassed) {
+    static update(deltaTime) {
+        //console.log("TimeElapsed", deltaTime/999,6);
         if (this.currentScene) {
             try {
                 switch (this.game.gamestate) {
@@ -53,7 +66,7 @@
                     }
                 }
             }
-            catch (e) {console.log(e) }
+            catch (e) { console.log(e) }
         }
     }
     static clearScene() {
@@ -189,29 +202,29 @@ class Game {
         SceneManager.game.switchState(2);
     }
     battleStart() {
-      
         this.playerManager.players[0].switchState(2);
         SceneManager.game.switchState(3);
         SceneManager.currentScene.getChildByName("landing").destroy();
         UIManager.controlPanel();
     }
     onProcessWar() {
-        SceneManager.currentScene.getChildByName("ibox").children[0].text ="FPS:"+Math.floor(SceneManager.Gapp.ticker.FPS);
+        SceneManager.currentScene.getChildByName("ibox").children[0].text = "FPS:" + Math.floor(SceneManager.Gapp.ticker.FPS);
         // console.log(SceneManager.Gapp.ticker.FPS);
-        //this.playerManager.players[0].units.forEach((el) => 
-        //{
-        //    console.log(el.name);
-        //   // console.log(el.currentPosVec);
-        
-        //})
-      //  console.log(this.playerManager.players[0]);
-        try {
 
-            this.playerManager.players[0].units.forEach((el) => el.move());
-            this.playerManager.players[0].units.forEach((el) => el.getcollising());
+        //  console.log(this.playerManager.players[0]);
+        try {
+            this.playerManager.players[0].units.forEach((el) => {
+              console.log(el);
+                // console.log(el.currentPosVec);
+
+            })
+            //  this.playerManager.players[0].units.forEach((el) => el.move());
+            //   this.playerManager.players[0].units[0].rb.getstats();
+            //  this.playerManager.players[0].units[0].rb.addforce(new Vector2(250,0),10);
+            // this.playerManager.players[0].units.forEach((el) => el.getcollising());
         }
         catch (e) {
-             console.log(e);
+            console.log(e);
         }
     }
     checkUnitPositions() {

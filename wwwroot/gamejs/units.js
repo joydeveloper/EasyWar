@@ -10,7 +10,7 @@
         this.damage = damage;
         this.range = range;
         this.cooldown = cooldown;
-        this.velocity = velocity / 10;
+        this.velocity = velocity / speedscale;
         this.velocityX = velocity / SceneManager._width;
         this.velocityY = velocity / SceneManager._height;
         this.armor = armor;
@@ -22,14 +22,19 @@
         this.minrotangle = 10;
         this.strafespeed = 33;
         this.fjumpspeed = 30;
-
+        SceneManager.Gapp.ticker.add(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
+        this.observer = new EventObserver();
     }
     move() {
         try {
+            // console.log(this);
             this.dir = Vector2.sub(this.destPosVec, this.currentPosVec).floor;
             this.forwardvec = this.getforward();
             this.dtangle = this.getangle();
-            if (this.dir.lenght > this.graphics.getBounds().width*0.4 || this.dir.lenght > this.graphics.getBounds().height*0.4) {
+            //this.graphics.transform.position.x = Vector2.lerp(this.graphics.transform.position, this.destPosVec, SceneManager.dt * this.velocityX).x;
+            //this.graphics.transform.position.y = Vector2.lerp(this.graphics.transform.position, this.destPosVec, SceneManager.dt * this.velocityY).y;
+          //  console.log("lerpmx", Vector2.lerp(this.graphics.transform.position, this.destPosVec, SceneManager.dt * this.velocityX).x);
+            if (this.dir.lenght > this.graphics.getBounds().width * 0.4 || this.dir.lenght > this.graphics.getBounds().height * 0.4) {
                 this.isMoving = true;
                 this.graphics.transform.position.x += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).x;
                 this.graphics.transform.position.y += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).y;
@@ -37,13 +42,13 @@
             }
             else {
                 this.isMoving = false;
-               // SceneManager.Gapp.ticker.stop();
+                // 
             }
 
             this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y);
             // SceneManager.Gapp.ticker.stop();
         }
-        catch (e) { console.log(e) }
+        catch (e) { }// console.log(e) }
     }
     rotate() {
         //const graphics = new PIXI.Graphics();
@@ -52,7 +57,7 @@
         //graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
         //SceneManager.currentScene.addChild(graphics);
         if (Math.abs(this.dtangle) > this.minrotangle) {
-            console.log(this.dtangle);
+          //  console.log(this.dtangle);
             let sign = Math.sign(wherepoint(this.currentPosVec, this.forwardvec, this.destPosVec));
             this.graphics.angle += Math.floor(this.dtangle * sign);
             if (this.graphics.angle >= 360 || this.graphics.angle <= -360) {
@@ -85,16 +90,18 @@
             return new Vector2();
         }
 
+
     }
     getangle() {
         //const graphics = new PIXI.Graphics();
         //graphics.lineStyle(2, 0xFF0000, 1);
-        let angle = Vector2.angle(this.forwardvec.forward(this.currentPosVec).floor, this.dir.floor);
+       let angle = Vector2.angle(this.forwardvec.forward(this.currentPosVec).floor, this.dir.floor);
+       
         //graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
         //graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
         //graphics.endFill();
         // SceneManager.currentScene.addChild(graphics);
-        return 180 - angle;
+        return 180-angle;
     }
     strafeleft() {
         let forward = this.getforward();
@@ -128,32 +135,41 @@
         this.destPosVec = null;
         this.isMoving = false;
     }
-
-    getcollising() {
-        if (this.isMoving) {
-            this.acceleration.set(this.acceleration.x * 0.99, this.acceleration.y * 0.99);
-            this.acceleration.set(Math.cos(this.dtangle) * this.velocity, Math.sin(this.dtangle) * this.velocity);
-            SceneManager.game.playerManager.players[0].units.forEach((el) => {
-                if (testForAABBRange(this.graphics, el.graphics) && this.graphics != el.graphics) {
-                    this.isMoving = false;
-                    this.strafeleft();
-                    const collisionPush = collisionResponse(el, this);
-                    this.acceleration.set(
-                        (collisionPush.x * el.mass),
-                        (collisionPush.y * el.mass),
-                    );
-                    el.acceleration.set(
-                        -(collisionPush.x * this.mass),
-                        -(collisionPush.y * this.mass),
-                    );
-                    el.graphics.transform.position.x += el.acceleration.x * SceneManager.dt;
-                    el.graphics.transform.position.y += el.acceleration.y * SceneManager.dt;
-                    this.graphics.transform.position.x += this.acceleration.x * SceneManager.dt;
-                    this.graphics.transform.position.y += this.acceleration.y * SceneManager.dt;
-                }
-            })
-        }
+    update() {
+        this.move();
     }
+    delete() {
+        super.delete();
+        this.observer.broadcast({ someData: this})
+        SceneManager.Gapp.ticker.remove(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
+        console.log(SceneManager.Gapp.ticker.count);
+        console.log("removed");
+    }
+    //getcollising() {
+    //    if (this.isMoving) {
+    //        this.acceleration.set(this.acceleration.x * 0.99, this.acceleration.y * 0.99);
+    //        this.acceleration.set(Math.cos(this.dtangle) * this.velocity, Math.sin(this.dtangle) * this.velocity);
+    //        SceneManager.game.playerManager.players[0].units.forEach((el) => {
+    //            if (testForAABBRange(this.graphics, el.graphics) && this.graphics != el.graphics) {
+    //                this.isMoving = false;
+    //                this.strafeleft();
+    //                const collisionPush = collisionResponse(el, this);
+    //                this.acceleration.set(
+    //                    (collisionPush.x * el.mass),
+    //                    (collisionPush.y * el.mass),
+    //                );
+    //                el.acceleration.set(
+    //                    -(collisionPush.x * this.mass),
+    //                    -(collisionPush.y * this.mass),
+    //                );
+    //                el.graphics.transform.position.x += el.acceleration.x * SceneManager.dt;
+    //                el.graphics.transform.position.y += el.acceleration.y * SceneManager.dt;
+    //                this.graphics.transform.position.x += this.acceleration.x * SceneManager.dt;
+    //                this.graphics.transform.position.y += this.acceleration.y * SceneManager.dt;
+    //            }
+    //        })
+    //    }
+    //}
 }
 class UnitFactory {
     static unitid = 0;
@@ -175,29 +191,29 @@ class UnitFactory {
     static createUnit(unittype) {
     }
 }
-function collisionResponse(object1, object2) {
-    if (!object1 || !object2) {
-        return new Vector2();
-    }
-    const vCollision = Vector2.sub(object2.currentPosVec, object1.currentPosVec);
-    const distance = Vector2.distance(object2.currentPosVec, object1.currentPosVec);
-    const vCollisionNorm = new Vector2(
-        vCollision.x / distance,
-        vCollision.y / distance,
-    );
-    const vRelativeVelocity = new Vector2(
-        object1.acceleration.x - object2.acceleration.x,
-        object1.acceleration.y - object2.acceleration.y,
-    );
-    const speed = vRelativeVelocity.x * vCollisionNorm.x
-        + vRelativeVelocity.y * vCollisionNorm.y;
-    const impulse = 2 * speed / (object1.mass + object2.mass);
-    //console.log(impulse + "|" + object1.mass + "|" + speed);
-    return new Vector2(
-        impulse * vCollisionNorm.x,
-        impulse * vCollisionNorm.y,
-    );
-}
+//function collisionResponse(object1, object2) {
+//    if (!object1 || !object2) {
+//        return new Vector2();
+//    }
+//    const vCollision = Vector2.sub(object2.currentPosVec, object1.currentPosVec);
+//    const distance = Vector2.distance(object2.currentPosVec, object1.currentPosVec);
+//    const vCollisionNorm = new Vector2(
+//        vCollision.x / distance,
+//        vCollision.y / distance,
+//    );
+//    const vRelativeVelocity = new Vector2(
+//        object1.acceleration.x - object2.acceleration.x,
+//        object1.acceleration.y - object2.acceleration.y,
+//    );
+//    const speed = vRelativeVelocity.x * vCollisionNorm.x
+//        + vRelativeVelocity.y * vCollisionNorm.y;
+//    const impulse = 2 * speed / (object1.mass + object2.mass);
+//    //console.log(impulse + "|" + object1.mass + "|" + speed);
+//    return new Vector2(
+//        impulse * vCollisionNorm.x,
+//        impulse * vCollisionNorm.y,
+//    );
+//}
 var test = 0;
 function wherepoint(vectora, vectorb, point) {
     s = (vectorb.x - vectora.x) * (point.y - vectora.y) - (vectorb.y - vectora.y) * (point.x - vectora.x)

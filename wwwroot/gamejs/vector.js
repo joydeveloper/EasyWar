@@ -88,23 +88,32 @@
         else
             return 0;
     }
+    scale(vector) {
+        this.x *= vector.x;
+        this.y *= vector.y;
+        return this;
+    }
+    static scalarmul(vector, scalar) {
+        return new Vector2(vector.x * scalar, vector.y * scalar);
+    }
+   
     static movetowards(vectora, vectorb, velocity) {
         let dx = vectora.x - vectorb.x;
         let dy = vectora.y - vectorb.y;
         let r = Vector2.sub(vectora.floor, vectorb.floor).lenght;
         let angle = Math.atan2(dy, dx);
-        const graphics = new PIXI.Graphics();
-        graphics.lineStyle(2, 0xFFFF00, 1);
-        let c_x = vectora.x;
-        let c_y = vectora.y;
-        let x, y;
-        x = r * Math.cos(0) + c_x;
-        y = r * Math.sin(0) + c_y;
-        graphics.moveTo(vectora.x, vectora.y);
-        x = r * Math.cos(angle) + c_x;
-        y = r * Math.sin(angle) + c_y;
-        graphics.lineTo(x, y);
-        graphics.endFill();
+        //const graphics = new PIXI.Graphics();
+        //graphics.lineStyle(2, 0xFFFF00, 1);
+        //let c_x = vectora.x;
+        //let c_y = vectora.y;
+        //let x, y;
+        //x = r * Math.cos(0) + c_x;
+        //y = r * Math.sin(0) + c_y;
+        //graphics.moveTo(vectora.x, vectora.y);
+        //x = r * Math.cos(angle) + c_x;
+        //y = r * Math.sin(angle) + c_y;
+        //graphics.lineTo(x, y);
+        //graphics.endFill();
         //SceneManager.currentScene.addChild(graphics);
         return new Vector2(Math.cos(angle)*velocity, Math.sin(angle)*velocity);
     }
@@ -142,25 +151,37 @@
         else
             return 0;
     }
+    static signedangle(vectora, vectorb) {
+        let num = this.angle(vectora, vectorb);
+        let num2 = Math.sign(vectora.x * vectorb.y - vectora.y * vectorb.x);
+        return num * num2;
+    }
+    static reflect(vectordir, vectorNormal) {
+        let num = -2 * this.dot(vectorNormal, vectordir)
+        return new Vector2(num * vectorNormal.x + vectordir.x, num * vectorNormal.y + vectordir.y);
+    }
+    
     static rotate(point, angle) {
         let vec = new Vector2();
         vec.x = point.x * Math.cos(angle) - point.y * Math.sin(angle);
         vec.y = point.x * Math.sin(angle) + point.y * Math.cos(angle);
         return vec;
     }
-    static lerp(vector1, vector2, t) {
+    static lerp(vectora, vectorb, t) {
         let vec = new Vector2();
-        vec.x = vector1.x + t * (vector2.x - vector1.x);
-        vec.y = vector1.y + t * (vector2.y - vector1.y);
+        vec.x = vectora.x + t * (vectorb.x - vectora.x);
+        vec.y = vectora.y + t * (vectorb.y - vectora.y);
         return vec;
 
     }
-    static lerpP(vector1, vector2, t) {
+    static lerpP(vectora, vectorb, t) {
         let vec = new Vector2();
-        vec.x = (1 - t) * vector1.x + t * vector2.x;
-        vec.y = (1 - t) * vector1.y + t * vector2.y;
+        vec.x = (1 - t) * vectora.x + t * vectorb.x;
+        vec.y = (1 - t) * vectora.y + t * vectorb.y;
         return vec;
-
+    }
+    static lerpunclamped(vectora, vectorb, t) {
+        return new Vector2(vectora.x + (vectorb.x - vectora.x) * t, vectora.y + (vectorb.y - vectora.y) * t);
     }
 }
 function radTodeg(radians) {

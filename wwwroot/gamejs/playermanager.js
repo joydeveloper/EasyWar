@@ -1,7 +1,9 @@
 ﻿class PlayerManager {
+    cx;
     constructor() {
         this.players = [];
         this.rotate = this.rotate.bind(this);
+        this.confun = this.confun.bind(this);
     }
     static units = ["general.png"]//, "support.png", "support.png", "sniper.png", "trooper.png", "mortar.png", "moto.png", "tank.png"];
     static scalefactor = 0.5;
@@ -42,11 +44,18 @@
 
     }
     rotate(angle) {
-       // console.log(angle);
         SceneManager.Gapp.ticker.start();
         this.players[0].units[0].graphics.angle += angle;
-       // SceneManager.Gapp.ticker.stop();
-       // this.players[0].lastunit.graphics.transform.position.x += 50;
+    }
+    addforce(vector, mass) {
+        this.cx = () => this.confun(vector, mass);
+        SceneManager.Gapp.ticker.add(this.cx, this, PIXI.UPDATE_PRIORITY.NORMAL);
+    }
+    confun(vector, mass) {
+       let x= this.players[0].units[0].rb.addforce(vector, mass);
+        if (!x) {
+            SceneManager.Gapp.ticker.remove(this.cx,this);
+        }
     }
 }
 

@@ -4,15 +4,17 @@
         this.x = x || 0;;
         this.y = y || 0;;
         this.anchor = anchor || 0;
-        this.isCollising = false;
     }
+   
     create(scene) {
         if (scene === undefined) {
             SceneManager.currentScene.addChild(this.graphics);
+     
         }
         else {
             scene.addChild(this.graphics);
         }
+
     }
     delete(scene) {
         if (scene === undefined) {
@@ -36,6 +38,9 @@
         this.graphics.x = this.x;
         this.graphics.y = this.y;
         this.graphics.anchor.set(this.anchor);
+    }
+    update() {
+       console.log("updatingGO");
     }
 };
 function drawSq(x, y) {

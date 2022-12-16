@@ -19,11 +19,14 @@
     <script src="gamejs/vector.js"></script>
     <script src="gamejs/gameobjects.js"></script>
     <script src="gamejs/player.js"></script>
+    <script src="gamejs/rigidbody.js"></script>
     <script src="gamejs/playermanager.js"></script>
     <script src="gamejs/units.js"></script>
     <script src="gamejs/ui.js"></script>
+    <script src="https://unpkg.com/mocha@^3/mocha.js"></script>
     <link href="css/site.css" rel="stylesheet" type="text/css">
     <link href="css/adaptive.css" rel="stylesheet">
+    <link href="https://unpkg.com/mocha@^3/mocha.css" rel="stylesheet">
 </head>
 <body onload="loadScript('barabanjs/core/startup.js', script => { appx.Start() });">
     <nav> <div align="center"><header><h1 id="status">EasyWar</h1></header></div></nav>
@@ -31,40 +34,91 @@
     <canvas id='mainscene'></canvas>
     <script>
         SceneManager.initialize(window.screen.width - 19, window.screen.height - 150, 'white');
-       
-
-       /* console.log(test);*/
-        let x = 0;
-        switch (x) {
-            case 1: {
-                console.log(PIXI);;
-                break;
-            }
-            case 2: {
-                console.log(SceneManager.Gapp);;
-                break;
-            }
-            case 3: {
-                console.log(new PIXI.Graphics());
-                break;
-            }
-            default:
-                break;
-        }
-        //let tv = new Vector2(1, 1);
-        //console.log(tv.rotate(1));
-        //const app = new PIXI.Application({ antialias: true });
-        //document.body.appendChild(app.view);
-        let dir = new Vector2(524,331);
-        let for1 = new Vector2(478, 215);
-        //let vector2 = new Vector2(4, 3);
-            //let x = Vector2.dot(vector, vector2) / (vector.lenght * vector2.lenght);
-            console.log(Vector2.dot(dir, for1));
-            //console.log(vector.lenght, vector2.lenght);
-            //console.log(Math.cos(0.12));
-        /*    console.log(Vector2.rotate(vector,90));*/
-        //console.log(Vector2.angle(vectora, vectorb));
+       // console.log(SceneManager.Gapp.ticker.count);
   
+       /* console.log(test);*/
+        //let x = 0;
+        //switch (0) {
+        //    case 1: {
+        //        console.log(PIXI);;
+        //        break;
+        //    }
+        //    case 2: {
+        //        console.log(SceneManager.Gapp);;
+        //        break;
+        //    }
+        //    case 3: {
+        //        console.log(new PIXI.Graphics());
+        //        break;
+        //    }
+        //    default:
+        //        break;
+        //}
+        class EventObserver {
+            constructor() {
+                this.observers = []
+            }
+
+            subscribe(fn) {
+                this.observers.push(fn)
+            }
+
+            unsubscribe(fn) {
+                this.observers = this.observers.filter(subscriber => subscriber !== fn)
+            }
+
+            broadcast(data) {
+                this.observers.forEach(subscriber => subscriber(data))
+            }
+        }
+        //mocha.setup('bdd');
+
+        //window.TESTS_COMPLETE = false;
+        //window.TESTS_PASSED = 0;
+        //window.TESTS_FAILED = 0;
+
+        //window.onload = function () {
+        //    var runner = mocha.run();
+
+        //    runner.on('test end', function (test) {
+        //        if (test.state === 'passed') window.TESTS_PASSED++;
+        //        else window.TESTS_FAILED++;
+        //    });
+
+        //    runner.on('end', function () {
+        //        window.TESTS_COMPLETE = true;
+        //    });
+        //};
+        //class MyEventTarget extends EventTarget {
+        //    constructor(mySecret) {
+        //        super();
+        //        this._secret = mySecret;
+        //    }
+
+        //    get secret() { return this._secret; }
+        //};
+
+        //let myEventTarget = new MyEventTarget(5);
+        //let value = myEventTarget.secret;  // === 5
+        //myEventTarget.addEventListener("foo", (e) => {
+        //    myEventTarget._secret = e.detail;
+        //});
+
+        //let event = new CustomEvent("foo", { detail: 7 });
+        //myEventTarget.dispatchEvent(event);
+        //let newValue = myEventTarget.secret; // === 7
+
+      
+
+       
+        //class MyCustomElement extends HTMLElement {
+        //    constructor() {
+        //        super();
+        //    }
+        //}
+        //customElements.define('my-custom-element', MyCustomElement);
+        //let mce = new MyCustomElement();
+        //console.log(mce);
     </script>
     <article></article>
     <aside></aside>

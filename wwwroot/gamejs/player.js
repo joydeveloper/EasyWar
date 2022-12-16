@@ -1,4 +1,5 @@
-﻿class Player {
+﻿const speedscale = 10;
+class Player {
     states = ["created", "unitsplaced", "warprocess", "gameover"];
     lastunit;
     constructor(units) {
@@ -7,7 +8,7 @@
         this.state = this.states[0];
         this.unitBattleClick = this.unitBattleClick.bind(this);
         this.fieldBattleClick = this.fieldBattleClick.bind(this);
-
+       
     }
     switchState(state) {
         this.state = this.states[state];
@@ -91,14 +92,28 @@
         this.units.forEach((protounit) => {
             let unit = (UnitFactory.upgradeGameObjToUnit(protounit, 1, 1, 1, 10, 1, actions));
             this.units.splice(this.units.indexOf(protounit), 1, unit);
+      
             //use foreach[item,index];
         })
         this.units.forEach((unit) => {
             unit.graphics.cursor = 'copy';
+            unit.rb = new Rigidbody(unit, 1, 10);
+            unit.observer.subscribe(data => {
+                data = unit;
+                this.delete(data);
+            })
             this.removeEventListnerOnLocate(unit.graphics);
             this.addEventListnersOnBattle(unit.graphics);
         })
+       
     }
+    delete(unit) {
+    //[];
+        let idx = this.units.indexOf(unit);
+        this.units.splice(idx, 1);
+        console.log(this.units);
+    }
+
     addEventListnersOnLocate(element) {
         this.element = element;
         this.element
@@ -110,7 +125,8 @@
             .on('touchendoutside', this.onDragEnd)
             .on('mousemove', this.onDragMove)
             .on('touchmove', this.onDragMove)
-            .on('pointerdown',  this.unitLocClick)
+            .on('pointerdown', this.unitLocClick)
+       
     }
     removeEventListnerOnLocate(element) {
         this.element = element;
