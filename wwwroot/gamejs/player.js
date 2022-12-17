@@ -98,6 +98,8 @@ class Player {
         this.units.forEach((unit) => {
             unit.graphics.cursor = 'copy';
             unit.rb = new Rigidbody(unit, 1, 10);
+            unit.col = new Collider(unit);
+            unit.col.drawcollider();
             unit.observer.subscribe(data => {
                 data = unit;
                 this.delete(data);
@@ -108,10 +110,9 @@ class Player {
        
     }
     delete(unit) {
-    //[];
         let idx = this.units.indexOf(unit);
         this.units.splice(idx, 1);
-        console.log(this.units);
+     
     }
 
     addEventListnersOnLocate(element) {

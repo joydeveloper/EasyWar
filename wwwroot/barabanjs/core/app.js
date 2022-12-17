@@ -8,6 +8,7 @@ const IPAD = 5;
 class AppX {
     constructor(appconfig) {
         this.appconfig = appconfig;
+        this.games = [];
     }
     isFirstStartup = false;
     Setup() {

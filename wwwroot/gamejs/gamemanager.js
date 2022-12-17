@@ -75,6 +75,9 @@
     static startGame() {
         this.game = new Game();
         this.game.startGame();
+   
+
+       // console.log(SceneManager.currentScene);
     }
     static waitForLoading(scene, x) {
         if (!scene.isLoaded) {
@@ -140,6 +143,7 @@ class Scene extends PIXI.Container {
         this.spritesheet = gi;
         this.isLoaded = true;
         this.removeChild(this.loaderBar);
+     
     }
     async onLoading(gi) {
         let x = 0;
@@ -168,6 +172,8 @@ class Game {
         let x = 100;
         SceneManager.waitForLoading(scene, x);
         SceneManager.game = this;
+        window.appx.games.push(this);
+       
     }
     checkState() {
         switch (this.gamestate) {
@@ -202,6 +208,9 @@ class Game {
         SceneManager.game.switchState(2);
     }
     battleStart() {
+      //  console.log(this.playerManager.players[0].units[0]);
+   
+       // console.log(x);
         this.playerManager.players[0].switchState(2);
         SceneManager.game.switchState(3);
         SceneManager.currentScene.getChildByName("landing").destroy();
@@ -213,11 +222,11 @@ class Game {
 
         //  console.log(this.playerManager.players[0]);
         try {
-            this.playerManager.players[0].units.forEach((el) => {
-              console.log(el);
+            //this.playerManager.players[0].units.forEach((el) => {
+            //  console.log(el.col.colliderinfo());
                 // console.log(el.currentPosVec);
 
-            })
+           // })
             //  this.playerManager.players[0].units.forEach((el) => el.move());
             //   this.playerManager.players[0].units[0].rb.getstats();
             //  this.playerManager.players[0].units[0].rb.addforce(new Vector2(250,0),10);
