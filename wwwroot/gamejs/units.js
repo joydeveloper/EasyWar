@@ -136,7 +136,12 @@
         this.isMoving = false;
     }
     update() {
+       // console.log("unit", new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y).floor);
         this.move();
+        if (this.rb)
+            this.rb.update();
+        if (this.rb.collider)
+            this.rb.collider.update();
     }
     delete() {
         super.delete();

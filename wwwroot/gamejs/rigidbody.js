@@ -3,12 +3,13 @@
     eforcemode = ["force", "impusle"];
     forcevector;
     acceleration;
+    collider;
     constructor(go, angularvelocity, mass) {
-        this.position = new Vector2(go.graphics.transform.position);
+        this.position = go.graphics.transform.position;
         this.angle = 0;
         this.velocity = go.velocity;
         this.angularvelocity = angularvelocity;
-        this.mass = mass || 1;
+        this.mass = 10// mass || 1;
         this.cm = new Vector2(go.graphics.getBounds().width, go.graphics.getBounds().height);
         this.inertia = this.mass * this.velocity;
         this.drag = 1;
@@ -18,71 +19,73 @@
         this.go = go;
         this.dtangle = 0;
         this.speed = 0;
-        SceneManager.Gapp.ticker.add(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
         this.go.observer.subscribe(data => {
             this.delete();
         })
     }
     addforce(vector, mass) {
-        console.log("forced");
         (mass == "undefined" || mass == 0) ? 1 : mass;
         if (!this.forcevector) {
             let vx = (mass * vector.x + this.mass * this.speed) / (mass + this.mass);
             let vy = (mass * vector.y + this.mass * this.speed) / (mass + this.mass);
             let forcespeed = new Vector2(vx, vy);
             this.forcevector = Vector2.addict(this.position, forcespeed);
+            this.go.graphics.transform.position.x = this.forcevector.x //Vector2.lerpunclamped(this.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
+            this.go.graphics.transform.position.x = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
+            this.go.graphics.transform.position.y = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityY).y;
         }
         else {
-            this.go.graphics.transform.position.x = Vector2.lerpunclamped(this.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
-            this.go.graphics.transform.position.y = Vector2.lerpunclamped(this.position, this.forcevector, SceneManager.dt * this.go.velocityY).y;
             if (Vector2.sub(this.forcevector, this.position).lenght <= 10) {
                 this.forcevector = null;
                 return false;
             }
             else {
+                this.go.graphics.transform.position.x = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
+                this.go.graphics.transform.position.y = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityY).y;
                 return true;
             }
         }
     }
     getstats() {
-        let rvec = Vector2.sub(this.go.graphics.transform.position, this.position);
+        let rvec = Vector2.sub(this.go.graphics.transform.position, this.position).floor;
         this.speed = rvec.lenght / SceneManager.dt * speedscale;
-        this.position = new Vector2(this.go.graphics.transform.position);
+        rvec = Vector2.sub(this.go.graphics.transform.position, this.position);
         let speed0 = rvec.lenght / SceneManager.dt * speedscale;
         this.acceleration = this.speed - speed0 / SceneManager.dt;
     }
     update() {
-        this.getstats();
+        // this.getstats();
+        if (this.collider)
+            this.collider.update();
     }
     delete() {
-        SceneManager.Gapp.ticker.remove(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
+        if (this.collider)
+            this.collider.delete();
     }
 
 }
 class Collider {
     static colliders = [];
     shapetype = ["box", "circle", "ellipse", "triangle", "line"];
-    constructor(go, colliderinfo) {
-        if (go) {
-            this.x = go.graphics.transform.position.x;
-            this.y = go.graphics.transform.position.y;
-            this.width = go.graphics.getBounds().width/2;
-            this.height = go.graphics.getBounds().height;
-            this.bounds = go.graphics.getBounds();
+    constructor(rb, colliderinfo) {
+        if (rb) {
+            this.position = rb.position;
+            //console.log("r",rb.position)
+            //console.log("t",this.position)
+            this.width = rb.go.graphics.getBounds().width / 2;
+            this.height = rb.go.graphics.getBounds().height;
+            this.bounds = rb.go.graphics.getBounds();
             this.shapetype = "box";
-            this.go = go;
+            this.rb = rb;
             this.contacts = [];
         }
         else {
-            this.x = colliderinfo.x;
-            this.y = colliderinfo.y;
+            this.positon = colliderinfo.position;
             this.width = colliderinfo.width;
             this.height = colliderinfo.height;
             this.shapetype = colliderinfo.type;
         }
-
         Collider.colliders.push(this);
-        SceneManager.Gapp.ticker.add(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
     }
     get getcontactscount() { return this.contacts.length; }
     get getcontacts() { return this.contacts }
@@ -117,13 +120,10 @@ class Collider {
         if (this.shape == null) {
             this.shape = new PIXI.Graphics();
             this.shape.beginFill(0xDC143C);
-            console.log(this.shape.rotation);
-            this.shape.drawRect(this.x, this.y, this.width , this.height);
+            this.shape.drawRect(this.position.x, this.position.y, this.width, this.height);
             this.shape.endFill();
-            this.shape.pivot.set(this.x + this.width/2, this.y+this.height/2);
-            SceneManager.currentScene.addChild(this.shape);
-
-
+            this.shape.pivot.set(this.position.x + this.width / 2, this.position.y + this.height / 2);
+           //  SceneManager.currentScene.addChild(this.shape);
         }
         return this.shape;
     }
@@ -132,39 +132,49 @@ class Collider {
         return colliderinfo;
     }
     update() {
-        this.shape.position.x = this.go.graphics.transform.position.x;
-        this.shape.position.y = this.go.graphics.transform.position.y ;
-        this.shape.angle = this.go.graphics.angle - startunitangle;
+        this.position = this.rb.position;
+        this.bounds = this.rb.go.graphics.getBounds();
+        this.shape.position.x = this.position.x;
+        this.shape.position.y = this.position.y;
+        this.shape.angle = this.rb.go.graphics.angle - startunitangle;
         this.oncollisonenter();
         this.oncollisonexit();
         this.oncollisonstay();
     }
+    delete() {
+
+    }
     oncollisonenter() {
         Collider.colliders.forEach((col) => {
             if (Collider.collisionAABB(this, col) && this != col) {
+                col.rb.addforce(new Vector2(10, 0), 100);
+                this.rb.addforce(new Vector2(-20, 0), 100);
                 if (!this.contacts.includes(col)) {
                     this.contacts.push(col)
-                    console.log("collisionenter");
                 }
-            }
-        });
-    }
-    oncollisonexit() {
-        this.contacts.forEach((con) => {
-            if (!Collider.collisionAABB(this, con) && this != con) {
-                this.contacts.splice(con, 1);
-                console.log("exit");
             }
         });
     }
     oncollisonstay() {
         if (this.getcontactscount != 0) {
-            this.contacts.forEach((con) => {
-                Collider.colliders.forEach((col) => {
+            this.contacts.forEach((con, item) => {
+                Collider.colliders.forEach((col, item) => {
                     if (Collider.collisionAABB(con, col) && con != col) {
-                            console.log("collisionstay");
+                        //  console.log("collisionstay");
+
                     }
                 });
+            });
+        }
+    }
+    oncollisonexit() {
+        if (this.getcontactscount != 0) {
+            this.contacts.forEach((con, item) => {
+
+                if (!Collider.collisionAABB(this, con) && this != con) {
+                    this.contacts.splice(con, 1);
+
+                }
             });
         }
     }
@@ -177,28 +187,37 @@ class Collider {
 }
 class ColliderInfo {
     constructor(width, height, shapetype) {
-        this.x = width / 2;
-        this.y = height / 2;
+        this.position = new Vector2(width / 2, height / 2);
         this.width = width;
         this.height = height;
         this.shapetype = shapetype;
     }
 }
-//function testForAABB(object1, object2) {
-//    const bounds1 = object1.getBounds();
-//    const bounds2 = object2.getBounds();
-//    return bounds1.x < bounds2.x + bounds2.width
-//        && bounds1.x + bounds1.width > bounds2.x
-//        && bounds1.y < bounds2.y + bounds2.height
-//        && bounds1.y + bounds1.height > bounds2.y;
-//}
-//function testForAABBRange(object1, object2, range) {
-//    if (range === undefined)
-//        range = 0;
-//    const bounds1 = object1.getBounds();
-//    const bounds2 = object2.getBounds();
-//    return bounds1.x < bounds2.x + bounds2.width+range
-//        && bounds1.x + bounds1.width+range > bounds2.x
-//        && bounds1.y < bounds2.y + bounds2.height+range
-//        && bounds1.y + bounds1.height+range > bounds2.y;
-//}
+
+function collisionResponse(object1, object2) {
+    if (!object1 || !object2) {
+        return new Vector2();
+    }
+    const vCollision = Vector2.sub(object2.position, object1.position);
+    const distance = Vector2.distance(object2.position, object1.position);
+    const vCollisionNorm = new Vector2(
+        vCollision.x / distance,
+        vCollision.y / distance,
+    );
+    const vRelativeVelocity = new Vector2(
+        object1.rb.acceleration - object2.rb.acceleration,
+        object1.rb.acceleration - object2.rb.acceleration
+    );
+    const speed = vRelativeVelocity.x * vCollisionNorm.x
+        + vRelativeVelocity.y * vCollisionNorm.y;
+
+    const impulse = 2 * speed / (object1.mass + object2.mass);
+    console.log("vc", vCollision);
+    console.log("vcn", vCollisionNorm);
+    console.log("vrc", vRelativeVelocity);
+    //console.log(impulse + "|" + object1.mass + "|" + speed);
+    return new Vector2(
+        impulse * vCollisionNorm.x,
+        impulse * vCollisionNorm.y,
+    );
+}

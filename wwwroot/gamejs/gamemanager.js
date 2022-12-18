@@ -205,6 +205,7 @@ class Game {
     }
     onBattleStart() {
         UIManager.infoBox(SceneManager.Gapp.ticker.FPS);
+        UIManager.infoBox2(SceneManager.Gapp.ticker.count);
         SceneManager.game.switchState(2);
     }
     battleStart() {
@@ -218,15 +219,17 @@ class Game {
     }
     onProcessWar() {
         SceneManager.currentScene.getChildByName("ibox").children[0].text = "FPS:" + Math.floor(SceneManager.Gapp.ticker.FPS);
+        SceneManager.currentScene.getChildByName("ibox").children[1].text = "Tickers:" + SceneManager.Gapp.ticker.count;
         // console.log(SceneManager.Gapp.ticker.FPS);
 
         //  console.log(this.playerManager.players[0]);
         try {
-            //this.playerManager.players[0].units.forEach((el) => {
-            //  console.log(el.col.colliderinfo());
+            this.playerManager.players[0].units.forEach((el) => {
+                //console.log(el.rb);
+                //console.log(el.rb.collider);
                 // console.log(el.currentPosVec);
 
-           // })
+            })
             //  this.playerManager.players[0].units.forEach((el) => el.move());
             //   this.playerManager.players[0].units[0].rb.getstats();
             //  this.playerManager.players[0].units[0].rb.addforce(new Vector2(250,0),10);

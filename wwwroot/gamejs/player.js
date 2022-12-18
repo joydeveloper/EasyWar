@@ -98,8 +98,8 @@ class Player {
         this.units.forEach((unit) => {
             unit.graphics.cursor = 'copy';
             unit.rb = new Rigidbody(unit, 1, 10);
-            unit.col = new Collider(unit);
-            unit.col.drawcollider();
+            unit.rb.collider = new Collider(unit.rb);
+            unit.rb.collider.drawcollider();
             unit.observer.subscribe(data => {
                 data = unit;
                 this.delete(data);

@@ -40,6 +40,13 @@
         graphics.addChild(debugtext);
         SceneManager.currentScene.addChild(graphics);
     }
+    static infoBox2(text) {
+      
+        const debugtext = new PIXI.Text(text, new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
+        debugtext.y = 25;
+        SceneManager.currentScene.getChildByName("ibox").addChild(debugtext);
+
+    }
     static landingPanel() {
         let landingfield = new PIXI.Container(0, SceneManager.currentScene._height - 250);
         let landingarea = new GameObject(0, SceneManager.currentScene._height - 250);
@@ -57,7 +64,7 @@
         button1.transform.position.y = SceneManager.currentScene._height - 200;
         button1.interactive = true;
         button1.buttonMode = true;
-        button1.on('pointerdown', function () { SceneManager.game.playerManager.addforce(new Vector2(99,5),20) });
+        button1.on('pointerdown', function () { SceneManager.game.playerManager.addforce(new Vector2(500,5),20) });
         const button2 = new PIXI.Text("DeleteUnit", new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
         button2.transform.position.x = 300;
         button2.transform.position.y = SceneManager.currentScene._height - 200;
