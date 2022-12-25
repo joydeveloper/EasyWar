@@ -33,7 +33,7 @@
     static infoBox(text) {
         const graphics = new PIXI.Graphics();
         graphics.beginFill(0x1E9ED6);
-        graphics.drawRect(0, 0, 150,50);
+        graphics.drawRect(0, 0, 150,100);
         graphics.endFill();
         graphics.name = "ibox";
         const debugtext = new PIXI.Text(text, new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
@@ -44,6 +44,13 @@
       
         const debugtext = new PIXI.Text(text, new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
         debugtext.y = 25;
+        SceneManager.currentScene.getChildByName("ibox").addChild(debugtext);
+
+    }
+    static infoBox3(text) {
+
+        const debugtext = new PIXI.Text(text, new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
+        debugtext.y = 45;
         SceneManager.currentScene.getChildByName("ibox").addChild(debugtext);
 
     }
@@ -64,13 +71,13 @@
         button1.transform.position.y = SceneManager.currentScene._height - 200;
         button1.interactive = true;
         button1.buttonMode = true;
-        button1.on('pointerdown', function () { SceneManager.game.playerManager.addforce(new Vector2(500,5),20) });
+        button1.on('pointerdown', function () { SceneManager.game.playerManager.addforce(new Vector2(100,0),100) });
         const button2 = new PIXI.Text("DeleteUnit", new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
         button2.transform.position.x = 300;
         button2.transform.position.y = SceneManager.currentScene._height - 200;
         button2.interactive = true;
         button2.buttonMode = true;
-        button2.on('pointerdown', function () { SceneManager.game.playerManager.players[0].units[0].delete() });
+        button2.on('pointerdown', function () { SceneManager.game.playerManager.players[0].units[0].stop() });
         const button3 = new PIXI.Text("StopGame", new PIXI.TextStyle({ fontFamily: 'fantasy', fontSize: 20 }));
         button3.transform.position.x = 500;
         button3.transform.position.y = SceneManager.currentScene._height - 200;

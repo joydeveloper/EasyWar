@@ -1,10 +1,12 @@
-﻿class Unit extends GameObject {
+﻿//TODO posh
+class Unit extends GameObject {
     currentPosVec;
     destPosVec;
     forwardvec;
     name;
     dtangle;
     dir;
+    waypoints = [];
     constructor(x, y, anchor, damage, range, cooldown, velocity, armor, actions) {
         super(x, y, anchor);
         this.damage = damage;
@@ -24,31 +26,48 @@
         this.fjumpspeed = 30;
         SceneManager.Gapp.ticker.add(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
         this.observer = new EventObserver();
+        this.sense = new UnitSense(this);
+        this.wpcount = 0;
     }
     move() {
-        try {
-            // console.log(this);
-            this.dir = Vector2.sub(this.destPosVec, this.currentPosVec).floor;
+        //if (this.destPosVec) {
+        //    try {
+        //        this.dir = Vector2.sub(this.destPosVec, this.currentPosVec).floor;
+        //        this.forwardvec = this.getforward();
+        //        this.dtangle = this.getangle();
+        //        if (this.dir.lenght > this.graphics.getBounds().width * 0.4 || this.dir.lenght > this.graphics.getBounds().height * 0.4) {
+        //            this.isMoving = true;
+        //            this.graphics.transform.position.x += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).x;
+        //            this.graphics.transform.position.y += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).y;
+        //            this.rotate();
+        //        }
+        //        else {
+        //            this.isMoving = false;
+        //        }
+        //        this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y);
+        //    }
+        //    catch (e) { /* console.log(e)*/ }
+        //}
+        if (this.waypoints.length > 1) {
+            this.dir = Vector2.sub(this.waypoints[0], this.currentPosVec).floor;
+            this.destPosVec = this.waypoints[0];
             this.forwardvec = this.getforward();
             this.dtangle = this.getangle();
-            //this.graphics.transform.position.x = Vector2.lerp(this.graphics.transform.position, this.destPosVec, SceneManager.dt * this.velocityX).x;
-            //this.graphics.transform.position.y = Vector2.lerp(this.graphics.transform.position, this.destPosVec, SceneManager.dt * this.velocityY).y;
-          //  console.log("lerpmx", Vector2.lerp(this.graphics.transform.position, this.destPosVec, SceneManager.dt * this.velocityX).x);
-            if (this.dir.lenght > this.graphics.getBounds().width * 0.4 || this.dir.lenght > this.graphics.getBounds().height * 0.4) {
-                this.isMoving = true;
-                this.graphics.transform.position.x += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).x;
-                this.graphics.transform.position.y += Vector2.movetowards(this.destPosVec, this.currentPosVec, SceneManager.dt * this.velocity).y;
-                this.rotate();
+            // console.log(this.dir);
+            //    if (this.dir.lenght > this.graphics.getBounds().width * 0.4 || this.dir.lenght > this.graphics.getBounds().height * 0.4) {
+            this.isMoving = true;
+            let x = Vector2.movetowards(this.waypoints[0], this.currentPosVec, SceneManager.dt * this.velocity).x;
+            let y = Vector2.movetowards(this.waypoints[0], this.currentPosVec, SceneManager.dt * this.velocity).y;
+          
+            this.graphics.transform.position.x += x;
+            this.graphics.transform.position.y += y;
+            if (this.dir.lenght < 2) {
+                this.waypoints.shift();
+               // this.rotate();
             }
-            else {
-                this.isMoving = false;
-                // 
-            }
-
             this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y);
-            // SceneManager.Gapp.ticker.stop();
         }
-        catch (e) { }// console.log(e) }
+        // this.currentPosVec = new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y);
     }
     rotate() {
         //const graphics = new PIXI.Graphics();
@@ -57,7 +76,7 @@
         //graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
         //SceneManager.currentScene.addChild(graphics);
         if (Math.abs(this.dtangle) > this.minrotangle) {
-          //  console.log(this.dtangle);
+            // console.log(this.dtangle);
             let sign = Math.sign(wherepoint(this.currentPosVec, this.forwardvec, this.destPosVec));
             this.graphics.angle += Math.floor(this.dtangle * sign);
             if (this.graphics.angle >= 360 || this.graphics.angle <= -360) {
@@ -71,7 +90,7 @@
         //console.log("cur", curangle);
         //console.log("r", r);
         let gabarite = getCenter(this.graphics.getBounds().width, this.graphics.getBounds().height).lenght;
-        if (r > gabarite/2) {
+        if (r > gabarite / 2) {
             const graphics = new PIXI.Graphics();
             graphics.lineStyle(2, 0xFFFFFF, 1);
             let c_x = this.currentPosVec.x;
@@ -82,99 +101,216 @@
             y = r * Math.sin(deg2rad * curangle) + c_y;
             graphics.lineTo(x, y);
             graphics.endFill();
-            //SceneManager.currentScene.addChild(graphics);
+            // SceneManager.currentScene.addChild(graphics);
             //SceneManager.Gapp.ticker.stop();
             return new Vector2(x, y);
         }
         else {
             return new Vector2();
         }
-
-
     }
     getangle() {
         //const graphics = new PIXI.Graphics();
         //graphics.lineStyle(2, 0xFF0000, 1);
-       let angle = Vector2.angle(this.forwardvec.forward(this.currentPosVec).floor, this.dir.floor);
-       
+        let angle = Vector2.angle(this.forwardvec.forward(this.currentPosVec).floor, this.dir.floor);
+
         //graphics.moveTo(this.currentPosVec.x, this.currentPosVec.y);
         //graphics.lineTo(this.destPosVec.x, this.destPosVec.y);
         //graphics.endFill();
         // SceneManager.currentScene.addChild(graphics);
-        return 180-angle;
+        return 180 - angle;
+    }
+    getcleanforward() {
+        let curangle = Math.floor(this.graphics.angle - startunitangle);
+        let c_x = this.currentPosVec.x;
+        let c_y = this.currentPosVec.y;
+        let x, y;
+        x = Math.cos(deg2rad * curangle) + c_x;
+        y = Math.sin(deg2rad * curangle) + c_y;
+        return new Vector2(x, y);
     }
     strafeleft() {
-        let forward = this.getforward();
+
+        let forward = this.getcleanforward();
         let fl = forward.left;
         let fc = this.currentPosVec.left;
         let res = Vector2.sub(fl, fc);
         res.normalize();
         this.graphics.transform.position.x += res.x * this.strafespeed;
         this.graphics.transform.position.y += res.y * this.strafespeed;
-        SceneManager.Gapp.ticker.stop();
+        // SceneManager.Gapp.ticker.stop();
         return fl;
     }
     straferight() {
-        let forward = this.getforward();
+        let forward = this.getcleanforward();
         let fl = forward.right;
         let fc = this.currentPosVec.right;
         let res = Vector2.sub(fl, fc);
         res.normalize();
         this.graphics.transform.position.x += res.x * this.strafespeed;
         this.graphics.transform.position.y += res.y * this.strafespeed;
-        SceneManager.Gapp.ticker.stop();
+        // SceneManager.Gapp.ticker.stop();
         return fl;
     }
     pushforward() {
         let vec = Vector2.movetowards(this.getforward(), this.currentPosVec, this.fjumpspeed);
         this.graphics.transform.position.x += vec.x;
         this.graphics.transform.position.y += vec.y;
-        SceneManager.Gapp.ticker.stop();
+        //  SceneManager.Gapp.ticker.stop();
     }
     stop() {
         this.destPosVec = null;
         this.isMoving = false;
     }
     update() {
-       // console.log("unit", new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y).floor);
+        // console.log("unit", new Vector2(this.graphics.transform.position.x, this.graphics.transform.position.y).floor);
         this.move();
         if (this.rb)
             this.rb.update();
         if (this.rb.collider)
             this.rb.collider.update();
+        //if (this.sense)
+        //    this.sense.update();
     }
     delete() {
         super.delete();
-        this.observer.broadcast({ someData: this})
+        this.observer.broadcast({ someData: this })
         SceneManager.Gapp.ticker.remove(this.update, this, PIXI.UPDATE_PRIORITY.NORMAL);
         console.log(SceneManager.Gapp.ticker.count);
-        console.log("removed");
+        // console.log("removed");
     }
-    //getcollising() {
-    //    if (this.isMoving) {
-    //        this.acceleration.set(this.acceleration.x * 0.99, this.acceleration.y * 0.99);
-    //        this.acceleration.set(Math.cos(this.dtangle) * this.velocity, Math.sin(this.dtangle) * this.velocity);
-    //        SceneManager.game.playerManager.players[0].units.forEach((el) => {
-    //            if (testForAABBRange(this.graphics, el.graphics) && this.graphics != el.graphics) {
-    //                this.isMoving = false;
-    //                this.strafeleft();
-    //                const collisionPush = collisionResponse(el, this);
-    //                this.acceleration.set(
-    //                    (collisionPush.x * el.mass),
-    //                    (collisionPush.y * el.mass),
-    //                );
-    //                el.acceleration.set(
-    //                    -(collisionPush.x * this.mass),
-    //                    -(collisionPush.y * this.mass),
-    //                );
-    //                el.graphics.transform.position.x += el.acceleration.x * SceneManager.dt;
-    //                el.graphics.transform.position.y += el.acceleration.y * SceneManager.dt;
-    //                this.graphics.transform.position.x += this.acceleration.x * SceneManager.dt;
-    //                this.graphics.transform.position.y += this.acceleration.y * SceneManager.dt;
-    //            }
-    //        })
-    //    }
-    //}
+}
+class UnitSense {
+    constructor(unit) {
+        //console.log(unit);
+        this.unit = unit;
+        this.path = [];
+        this.isPathFinding = false;
+    }
+    findpath() {
+        this.width = this.unit.graphics.getBounds().width;
+        this.height = this.unit.graphics.getBounds().height;
+        let startcell = new Cell(this.unit.currentPosVec.x, this.unit.currentPosVec.y, this.width, this.height);
+        let cellpath = new CellPath(startcell, this.unit.destPosVec);
+        cellpath.findpath();
+
+
+
+
+    }
+    overlook() {
+
+    }
+    update() {
+        this.position = this.unit.graphics.transform.position;
+        this.findpath();
+    }
+}
+class Cell {
+    constructor(x, y, width, height) {
+        this.position = new Vector2(x, y);
+        this.width = width;
+        this.height = height;
+    }
+}
+class CellPath {
+    constructor(startcell, endpoint) {
+        this.startcell = startcell;
+        this.endpoint = endpoint;
+        this.cells = [];
+        //  this.position
+    }
+    getstartvalue(cell) {
+        let res;
+        Collider.colliders.forEach((col1) => {
+            if (col1.bounds.x < cell.position.x + cell.width
+                && col1.bounds.x + col1.width > cell.position.x
+                && col1.bounds.y < cell.position.y + cell.height
+                && col1.bounds.y + col1.height > cell.position.y)// && (col1.position.x != this.startcell.position.x && col1.position.y != this.startcell.position.y))
+                res = NaN;
+            else
+                res = Vector2.distance(cell.position, this.startcell.position);
+        });
+        return res;
+    }
+    getpathvalue(cell) {
+        return Vector2.distance(this.endpoint, cell.position);
+    }
+    getweightvalue(cell) {
+        if (!isNaN(this.getstartvalue(cell)))
+            return (this.getstartvalue(cell) + this.getpathvalue(cell));
+    }
+    findpath() {
+        while (Vector2.distance(this.endpoint, this.startcell.position) > this.startcell.width) {
+            let width = this.startcell.width;
+            let height = this.startcell.height;
+            let x = this.startcell.position.x;
+            let y = this.startcell.position.y;
+            let values = [];
+            let rawcells = [
+                new Cell(x - width, y - height, width, height),
+                new Cell(x, y - height, width, height),
+                new Cell(x + width, y - height, width, height),
+                new Cell(x + width, y, width, height),
+                new Cell(x + width, y + height, width, height),
+                new Cell(x, y + height, width, height),
+                new Cell(x - width, y + height, width, height),
+                new Cell(x - width, y, width, height),
+            ];
+            rawcells.forEach((cell) => {
+                if (!isNaN(this.getstartvalue(cell)))
+                    values.push(this.getweightvalue(cell));
+            })
+            if (values.length != 0) {
+                let idx = values.indexOf(Math.min(...values));
+                this.startcell = rawcells[idx];
+                if (this.cells.length == 0)
+                    this.cells.push(this.startcell);
+                else if ((this.cells[this.cells.length - 1].position.x != this.startcell.position.x && this.cells[this.cells.length - 1].position.y != this.startcell.position.y)) {// || (this.cells[this.cells.length - 1].position.x != this.startcell.position.x && this.cells[this.cells.length - 1].position.y == this.startcell.position.y)) {
+                    this.cells.push(this.startcell);
+                }
+                // CellPath.drawcell(this.startcell);
+            }
+            else {
+                break;
+            }
+
+        }
+        return true;
+
+    }
+
+
+    drawpath() {
+        if (this.shape == null) {
+            this.shape = new PIXI.Graphics();
+            this.shape.beginFill(0xFFFF00);
+            this.shape.drawRect(this.startcell.position.x, this.startcell.position.y, this.startcell.width, this.startcell.height);
+            this.shape.endFill();
+            this.shape.pivot.set(this.startcell.position.x + this.startcell.width / 2, this.startcell.position.y + this.startcell.height / 2);
+            this.shape.position.x = this.startcell.position.x;
+            this.shape.position.y = this.startcell.position.y;
+            SceneManager.currentScene.addChild(this.shape);
+        }
+        //  console.log(this.shape);
+        return this.shape;
+    }
+    static drawcell(cell) {
+        let g = new PIXI.Graphics();
+        g.beginFill(0x00D678);
+        g.drawRect(cell.position.x, cell.position.y, cell.width, cell.height);
+        g.endFill();
+        g.pivot.set(cell.position.x + cell.width / 2, cell.position.y + cell.height / 2);
+        g.position.x = cell.position.x;
+        g.position.y = cell.position.y;
+        SceneManager.currentScene.addChild(g);
+    }
+}
+
+
+
+class UnitPersonalSpace {
+
 }
 class UnitFactory {
     static unitid = 0;

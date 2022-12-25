@@ -8,7 +8,7 @@ class Player {
         this.state = this.states[0];
         this.unitBattleClick = this.unitBattleClick.bind(this);
         this.fieldBattleClick = this.fieldBattleClick.bind(this);
-       
+        this.fieldBattledrag = this.fieldBattledrag.bind(this);
     }
     switchState(state) {
         this.state = this.states[state];
@@ -52,7 +52,7 @@ class Player {
                     el.destPosVec = new Vector2(event.global.x, event.global.y);
                 }
             })
-      
+      //  console.log(event);
       //SceneManager.Gapp.ticker.start();
     }
     unitBattleClick(event) {
@@ -65,6 +65,27 @@ class Player {
         })
       // SceneManager.Gapp.ticker.stop();
         SceneManager.currentScene.getChildByName("battleField").interactive = true;
+    }
+    fieldBattledrag(event) {
+      //  console.log(event);
+        if (this.lastunit && event.buttons == 1) {
+            event.preventDefault();
+          //  console.log("evented");
+            //console.log("c", this.lastunit.graphics.transform.position.x + 26);
+            //    if (this.lastunit.waypoints.length == 0)
+            //         this.lastunit.waypoints.push(new Vector2(event.client.x, event.client.y).floor);
+            //   else if ((this.lastunit.waypoints[this.lastunit.waypoints.length - 1].x != event.client.x && this.lastunit.waypoints[this.lastunit.waypoints.length - 1].y != event.client.y)) {// || (this.cells[this.cells.length - 1].position.x != this.startcell.position.x && this.cells[this.cells.length - 1].position.y == this.startcell.position.y)) {
+            this.lastunit.waypoints.push(new Vector2(event.global.x, event.global.y).floor);
+            //   }
+
+        }
+        else {
+           // console.log("end", this.lastunit.waypoints[this.lastunit.waypoints.length-1]);
+           
+        }
+           
+      
+       
     }
     onUnitLocate() {
         this.units.forEach((element) => {
@@ -84,6 +105,7 @@ class Player {
     onStartBattle() {
         SceneManager.currentScene.getChildByName("battleField").off('pointerdown', this.fieldLocClick);
         SceneManager.currentScene.getChildByName("battleField").on('pointerdown', this.fieldBattleClick);
+        SceneManager.currentScene.getChildByName("battleField").on('pointermove', this.fieldBattledrag);
         this.upgradeToBattleUnits();
         // currentunit = null;
     }

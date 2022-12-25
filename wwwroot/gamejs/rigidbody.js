@@ -9,7 +9,7 @@
         this.angle = 0;
         this.velocity = go.velocity;
         this.angularvelocity = angularvelocity;
-        this.mass = 10// mass || 1;
+        this.mass = 50// mass || 1;
         this.cm = new Vector2(go.graphics.getBounds().width, go.graphics.getBounds().height);
         this.inertia = this.mass * this.velocity;
         this.drag = 1;
@@ -30,16 +30,17 @@
             let vy = (mass * vector.y + this.mass * this.speed) / (mass + this.mass);
             let forcespeed = new Vector2(vx, vy);
             this.forcevector = Vector2.addict(this.position, forcespeed);
-            this.go.graphics.transform.position.x = this.forcevector.x //Vector2.lerpunclamped(this.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
-            this.go.graphics.transform.position.x = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
-            this.go.graphics.transform.position.y = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityY).y;
+           // console.log("set");
+            return true;
         }
         else {
             if (Vector2.sub(this.forcevector, this.position).lenght <= 10) {
+          //   console.log("forced");
                 this.forcevector = null;
                 return false;
             }
             else {
+           //  console.log("forcing");
                 this.go.graphics.transform.position.x = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityX).x;
                 this.go.graphics.transform.position.y = Vector2.lerpunclamped(this.go.graphics.transform.position, this.forcevector, SceneManager.dt * this.go.velocityY).y;
                 return true;
@@ -123,7 +124,7 @@ class Collider {
             this.shape.drawRect(this.position.x, this.position.y, this.width, this.height);
             this.shape.endFill();
             this.shape.pivot.set(this.position.x + this.width / 2, this.position.y + this.height / 2);
-           //  SceneManager.currentScene.addChild(this.shape);
+             SceneManager.currentScene.addChild(this.shape);
         }
         return this.shape;
     }
@@ -147,10 +148,17 @@ class Collider {
     oncollisonenter() {
         Collider.colliders.forEach((col) => {
             if (Collider.collisionAABB(this, col) && this != col) {
-                col.rb.addforce(new Vector2(10, 0), 100);
-                this.rb.addforce(new Vector2(-20, 0), 100);
+                let dist = Vector2.sub(this.rb.go.graphics.transform.position, col.rb.go.graphics.transform.position).abs.normalized;
+                // console.log(dist);
+              dist = Vector2.scalarmul(dist,this.rb.mass);
+             //  console.log("a",dist);
+            col.rb.addforce(dist,this.rb.mass);
+       
+            // this.rb.addforce(dist, col.rb.mass);
                 if (!this.contacts.includes(col)) {
                     this.contacts.push(col)
+             
+                 //   console.log();
                 }
             }
         });
@@ -160,8 +168,9 @@ class Collider {
             this.contacts.forEach((con, item) => {
                 Collider.colliders.forEach((col, item) => {
                     if (Collider.collisionAABB(con, col) && con != col) {
-                        //  console.log("collisionstay");
-
+ 
+                    this.rb.go.strafeleft();
+                      
                     }
                 });
             });
@@ -173,7 +182,7 @@ class Collider {
 
                 if (!Collider.collisionAABB(this, con) && this != con) {
                     this.contacts.splice(con, 1);
-
+                    
                 }
             });
         }

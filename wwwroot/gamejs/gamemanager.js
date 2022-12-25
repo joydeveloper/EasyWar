@@ -206,6 +206,7 @@ class Game {
     onBattleStart() {
         UIManager.infoBox(SceneManager.Gapp.ticker.FPS);
         UIManager.infoBox2(SceneManager.Gapp.ticker.count);
+        UIManager.infoBox3(GameObject.count);
         SceneManager.game.switchState(2);
     }
     battleStart() {
@@ -220,6 +221,8 @@ class Game {
     onProcessWar() {
         SceneManager.currentScene.getChildByName("ibox").children[0].text = "FPS:" + Math.floor(SceneManager.Gapp.ticker.FPS);
         SceneManager.currentScene.getChildByName("ibox").children[1].text = "Tickers:" + SceneManager.Gapp.ticker.count;
+        SceneManager.currentScene.getChildByName("ibox").children[2].text = "GameObj:" + SceneManager.Gapp.ticker.count;
+
         // console.log(SceneManager.Gapp.ticker.FPS);
 
         //  console.log(this.playerManager.players[0]);

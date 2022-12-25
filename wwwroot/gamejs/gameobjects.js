@@ -1,9 +1,11 @@
 ﻿class GameObject {
     graphics;
+    static count;
     constructor(x, y, anchor) {
         this.x = x || 0;;
         this.y = y || 0;;
         this.anchor = anchor || 0;
+        this.count++;
     }
    
     create(scene) {
@@ -14,6 +16,7 @@
         else {
             scene.addChild(this.graphics);
         }
+      
 
     }
     delete(scene) {

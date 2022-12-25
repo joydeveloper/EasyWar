@@ -5,7 +5,7 @@
         this.rotate = this.rotate.bind(this);
         this.confun = this.confun.bind(this);
     }
-    static units = ["general.png", "support.png", "support.png", "sniper.png", "trooper.png", "mortar.png", "moto.png", "tank.png"];
+    static units = ["general.png", "support.png"]//, "sniper.png", "trooper.png"]//, "mortar.png", "moto.png", "tank.png"];
     static scalefactor = 0.5;
     playerSetup(playerunits) {
         this.players.push(new Player(playerunits));

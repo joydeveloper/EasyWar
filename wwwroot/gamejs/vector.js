@@ -19,6 +19,11 @@
         this.y = Math.floor(this.y);
         return this;
     }
+    get abs() {
+        this.x = Math.abs(this.x);
+        this.y = Math.abs(this.y);
+        return this;
+    }
     get normalized() {
         let vec = new Vector2();
         const len = this.lenght;
@@ -142,6 +147,7 @@
         return new Vector2(vectora.x + vectorb.x, vectora.y + vectorb.y);
     }
     static distance(vectora, vectorb) {
+       
         return new Vector2(vectora.x - vectorb.x, vectora.y - vectorb.y).lenght;
     }
     static angle(vectora, vectorb) {
