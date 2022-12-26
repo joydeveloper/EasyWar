@@ -2,11 +2,8 @@
 <html>
 <head>
     <script src="https://pixijs.download/release/pixi.min.js"></script>
-  
-    <script src="gamejs/gamemanager.js"></script>
-    <script src="gamejs/playermanager.js"></script>
     <script src="gamejs/units.js"></script>
-    <script src="gamejs/ui.js"></script>
+
     <style>
         .button {
             background-color: #4CAF50; /* Green */
@@ -20,14 +17,27 @@
         }
     </style>
 </head>
-<body onload="onLoad()">
-    <script src="gamejs/utils.js"></script>
-    <script src="gamejs/apphead.js"></script>
+<body>
+   
     <div align="center"><header><h1 id="status">EasyWar</h1></header></div>
 
     <div id='mainscene'></div>
     <article></article>
     <aside></aside>
+    <script>
+        let app = new PIXI.Application({ resizeTo: window, background: "white", antialias: true });
+        const graphics = new PIXI.Graphics();
+        graphics.lineStyle(10, 0xFFBD01, 1);
+        graphics.beginFill(0x00FFBA);
+        graphics.drawRect(window.screen.width * 0.05, window.screen.height * 0.05, this.width, this.height);
+        graphics.endFill();
+        app.stage.addChild(graphics);
+        //import { AnimatedSprite, Assets } from 'pixi.js';
+
+        const sheet = Assets.load('Assets/DBUnit/dbunit.json');
+        animatedSprite = new AnimatedSprite(sheet.animations['aim']);
+        console.log(animatedSprite);
+    </script>
 </body>
 </html>
 

@@ -1,0 +1,96 @@
+{"frames": {
+
+"aim_1.png":
+{
+	"frame": {"x":374,"y":469,"w":380,"h":266},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":380,"h":266},
+	"sourceSize": {"w":380,"h":266}
+},
+"aim_2.png":
+{
+	"frame": {"x":0,"y":1079,"w":361,"h":411},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":361,"h":411},
+	"sourceSize": {"w":361,"h":411}
+},
+"aim_3.png":
+{
+	"frame": {"x":361,"y":1079,"w":327,"h":460},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":327,"h":460},
+	"sourceSize": {"w":327,"h":460}
+},
+"idle.png":
+{
+	"frame": {"x":0,"y":0,"w":378,"h":216},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":378,"h":216},
+	"sourceSize": {"w":378,"h":216}
+},
+"idlewait.png":
+{
+	"frame": {"x":375,"y":735,"w":351,"h":344},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":351,"h":344},
+	"sourceSize": {"w":351,"h":344}
+},
+"walk_1.png":
+{
+	"frame": {"x":0,"y":216,"w":372,"h":249},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":372,"h":249},
+	"sourceSize": {"w":372,"h":249}
+},
+"walk_2.png":
+{
+	"frame": {"x":0,"y":735,"w":375,"h":284},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":375,"h":284},
+	"sourceSize": {"w":375,"h":284}
+},
+"walk_3.png":
+{
+	"frame": {"x":378,"y":0,"w":379,"h":216},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":379,"h":216},
+	"sourceSize": {"w":379,"h":216}
+},
+"walk_4.png":
+{
+	"frame": {"x":372,"y":216,"w":373,"h":253},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":373,"h":253},
+	"sourceSize": {"w":373,"h":253}
+},
+"walk_5.png":
+{
+	"frame": {"x":0,"y":469,"w":374,"h":261},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":374,"h":261},
+	"sourceSize": {"w":374,"h":261}
+}},
+"animations": {
+	"aim": ["aim_1.png","aim_2.png","aim_3.png"],
+	"walk": ["walk_1.png","walk_2.png","walk_3.png","walk_4.png","walk_5.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "dbunit.png",
+	"format": "RGBA8888",
+	"size": {"w":757,"h":1539},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:6273354a967494f0c0d7a771f18bffeb:79b809b7937eee654d9afc6452f8ec2a:69f5c28d699614ed00fc89e8b3825c38$"
+}
+}

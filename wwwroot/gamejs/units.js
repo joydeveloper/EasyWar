@@ -1,3 +1,3 @@
-﻿class Unit extends GameObject {
+﻿class Unit  {
 
 }
