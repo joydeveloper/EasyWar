@@ -1,0 +1,60 @@
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+LogCritical 
+LogError 
+LogInformation 
+LogWarning 
+Path:   Time:0:57:15
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
+Now listening on: https://localhost:7176
+Now listening on: http://localhost:5289
+Application started. Press Ctrl+C to shut down.
+Hosting environment: Development
+Content root path: C:\Users\Scyga\source\repos\EasyWar\HeadQuarters\
